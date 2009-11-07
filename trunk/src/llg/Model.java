@@ -142,6 +142,8 @@ public class Model
     public final void move(double dx, double dy){
         this.dx += dx;
         this.dy += dy;
+
+        System.out.println(String.format("LD(%3.2f,%3.2f)",this.dx,this.dy));
     }
     public final void motion(double tx, double ty){
         this.tx += tx;
@@ -156,7 +158,7 @@ public class Model
         return false;
     }
     public void draw(Graphics2D g){
-        System.out.println(String.format("LD(%3.2f,%3.2f)",this.dx,this.dy));
+
         Graphics2D gm = (Graphics2D)g.create();
         try {
             gm.translate(this.dx,this.dy);
