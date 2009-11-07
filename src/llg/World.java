@@ -22,12 +22,15 @@ import java.awt.geom.Rectangle2D;
 import java.awt.Stroke;
 
 /**
+ * Paint a world coordinate grid within the viewport.
+ * 
  * @author jdp
  */
 public final class World
     implements Drawable
 {
     private final static int Grid = 100;
+    private final static double GriD = 100.0;
 
     private final static Stroke S = new BasicStroke(0.05f);
     private final static Color C = new Color(0xaf,0xaf,0x0);
@@ -41,15 +44,10 @@ public final class World
     public void draw(Graphics2D g){
 
         Rectangle2D.Double viewport = Panel.Instance.toWorld();
-        int loX = (int)(viewport.x);
-        int hiX = (int)(viewport.width + 100);
-        int loY = (int)(viewport.y);
-        int hiY = (int)(viewport.height + 100);
-
-        loX = (loX / 100) * 100;
-        hiX = (hiX / 100) * 100;
-        loY = (loY / 100) * 100;
-        hiY = (hiY / 100) * 100;
+        int loX = (int)((viewport.x / GriD) * GriD);
+        int hiX = (int)(((viewport.width + GriD) / GriD) * GriD);
+        int loY = (int)((viewport.y / GriD) * GriD);
+        int hiY = (int)(((viewport.height + GriD) / GriD) * GriD);
 
         g.setStroke(S);
 

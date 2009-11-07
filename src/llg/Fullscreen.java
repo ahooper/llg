@@ -17,6 +17,7 @@ package llg;
 
 import java.awt.AWTEvent;
 import java.awt.Frame;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 
 /**
@@ -72,19 +73,14 @@ public final class Fullscreen
             this.closed = true;
 
             this.panel.stop();
-            /*
-             * N.B. Called from AWT Event Queue via window event or
-             * key event.
-             */
-            java.awt.Window window = (java.awt.Frame)this.getParent();
 
-            window.hide();
+            new Aut.Shutdown().start();
 
-            window.dispose();
+            System.exit(0);
         }
     }
     @Override
-    public void processWindowEvent(WindowEvent event) {
+    protected void processWindowEvent(WindowEvent event) {
         super.processWindowEvent(event);
 
         switch(event.getID()) {
@@ -105,17 +101,55 @@ public final class Fullscreen
         case WindowEvent.WINDOW_CLOSED:
             System.exit(0);
             break;
+        case WindowEvent.WINDOW_ICONIFIED:
+            if (null != this.panel){
+                this.panel.stop();
+            }
+            break;
+        case WindowEvent.WINDOW_DEICONIFIED:
+        case WindowEvent.WINDOW_ACTIVATED:
+            if (null != this.panel){
+                this.panel.start();
+            }
+            break;
+        case WindowEvent.WINDOW_DEACTIVATED:
+            if (null != this.panel){
+                this.panel.stop();
+            }
+            break;
         }
     }
+    @Override
+    protected void processComponentEvent(ComponentEvent e) {
 
+        switch(e.getID()){
+        case ComponentEvent.COMPONENT_RESIZED:
+        case ComponentEvent.COMPONENT_MOVED:
+            if (null != this.panel){
+                Screen screen = new Screen(this);
+                this.panel.init(screen);
+            }
+            break;
+        case ComponentEvent.COMPONENT_SHOWN:
+            if (null != this.panel){
+                this.panel.start();
+            }
+            break;
+        case ComponentEvent.COMPONENT_HIDDEN:
+            if (null != this.panel){
+                this.panel.stop();
+            }
+            break;
+        }
+    }
 
     public static void main(String[] argv){
         Options opts = new Options(argv);
         Frame frame = new Frame(Title);
-
+        Screen screen = new Screen(frame);
         if (opts.hasString("--model"))
-            new Fullscreen(frame, new Screen(frame), new Modeller());
+            new Fullscreen(frame, screen, new Modeller(screen));
         else
-            new Fullscreen(frame, new Screen(frame), new Game());
+            new Fullscreen(frame, screen, new Game(screen));
     }
 }

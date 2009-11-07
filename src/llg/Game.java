@@ -42,12 +42,10 @@ public final class Game
     private World world;
 
 
-    public Game(){
-        super();
+    public Game(Screen screen){
+        super(screen);
         Instance = this;
         this.hud = new FlightDisplay(this);
-
-        new LandedLander();
     }
 
 
@@ -58,6 +56,7 @@ public final class Game
         }
     }
     public void init(Screen screen){
+
         super.init(screen);
 
         this.newGame();
@@ -118,6 +117,7 @@ public final class Game
         this.messagesClear();
 
         switch (key){
+
         case Event.ESCAPE:
 
             if (Lander.Current.isLanded())
@@ -176,7 +176,7 @@ public final class Game
 
         this.ds(2);
 
-        new FlyingLander();
+        new FlyingLander(Luna.Instance.landing(),true);
 
         this.hud.init(false);
     }

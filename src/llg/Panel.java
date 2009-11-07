@@ -15,6 +15,7 @@
  */
 package llg;
 
+import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Event;
 import java.awt.Graphics;
@@ -22,6 +23,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.ComponentEvent;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -44,7 +46,7 @@ import java.awt.geom.Rectangle2D;
  */
 public abstract class Panel
     extends java.awt.Canvas
-    implements BackingStore.Component
+    implements BackingStore.J2D
 {
 
     static Panel Instance;
@@ -66,13 +68,13 @@ public abstract class Panel
 
     private volatile double dx, dy, scale;
 
-    private BackingStore graphics;
+    private volatile BackingStore graphics;
 
     protected HUD hud;
 
 
-    public Panel(){
-        super();
+    public Panel(Screen screen){
+        super(screen.configuration);
         this.setBackground(Color.black);
         this.setForeground(Color.white);
         Instance = this;
@@ -115,6 +117,9 @@ public abstract class Panel
             this.scale = scale;
         }
     }
+    /**
+     * @return The viewport in world coordinates.
+     */
     public Rectangle2D.Double toWorld(){
 
         Rectangle2D.Double viewport = this.viewport;
@@ -128,24 +133,12 @@ public abstract class Panel
         }
         return viewport;
     }
-    public Rectangle2D.Double toWorldIn(){
-
-        Rectangle2D.Double viewport = this.viewport;
-        if (null == viewport){
-            double x = (-this.dx / this.scale);
-            double y = (-this.dy / this.scale);
-            double w = (this.innerWidth / this.scale);
-            double h = (this.innerHeight / this.scale);
-            viewport = new Rectangle2D.Double(x,y,w,h);
-            this.viewport = viewport;
-        }
-        return viewport;
-    }
     public void init(Screen screen){
+
         Rectangle display = screen.display;
 
-        this.width  = display.width;
-        this.height = display.height;
+        this.width  = (display.width);
+        this.height = (display.height);
 
         this.padding = (int)(0.1f * (float)Math.min(display.width, display.height));
 
@@ -158,7 +151,8 @@ public abstract class Panel
         this.top = (display.y + this.padding);
         this.bottom = (display.height - this.padding);
 
-        this.graphics = screen.getBackingStore(this.getParent(),this);
+        if (null == this.graphics)
+            this.graphics = screen.getBackingStore(this.getParent(),this);
     }
 
     public final void start(){
@@ -188,6 +182,18 @@ public abstract class Panel
             this.ticker = null;
             ticker.halt();
         }
+        /*
+         * Everything that calls this has a need to let these threads
+         * expire before continuing.
+         */
+        try {
+            Thread.sleep(200);
+        }
+        catch (InterruptedException mustIgnore){
+            /*
+             * Ignored in shutdown process
+             */
+        }
     }
     public void tick(){
         this.hud.update();
@@ -207,7 +213,7 @@ public abstract class Panel
         if (null != animator)
             animator.repaint();
     }
-    public final void paintIn(Graphics2D g){
+    public final void paint(Graphics2D g){
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                            RenderAntialiasing);
@@ -254,6 +260,33 @@ public abstract class Panel
     public boolean mouseDown(Event evt, int x, int y){
 
         return false;
+    }
+    @Override
+    protected void processComponentEvent(ComponentEvent e) {
+
+        switch(e.getID()){
+        case ComponentEvent.COMPONENT_RESIZED:
+        case ComponentEvent.COMPONENT_MOVED:
+            
+            java.awt.Container parent = this.getParent();
+            if (parent instanceof Fullscreen){
+                Screen screen = new Screen((Fullscreen)parent);
+                this.init(screen);
+            }
+            else if (parent instanceof Applet){
+                Screen screen = new Screen((Applet)parent);
+                this.init(screen);
+            }
+            break;
+        case ComponentEvent.COMPONENT_SHOWN:
+
+            this.start();
+            break;
+        case ComponentEvent.COMPONENT_HIDDEN:
+
+            this.stop();
+            break;
+        }
     }
 
     private final static Object RenderAntialiasing = RenderingHints.VALUE_ANTIALIAS_ON;

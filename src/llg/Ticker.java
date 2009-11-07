@@ -60,7 +60,7 @@ public final class Ticker
 
 
     Ticker(Panel panel){
-        super("Ticker");
+        super("LLG Ticker");
         this.setDaemon(true);
         this.setPriority(MIN_PRIORITY);
         if (null != panel)
@@ -73,6 +73,8 @@ public final class Ticker
     public void halt(){
         this.running = false;
         try {
+            this.interrupt();
+
             Thread.sleep(Sync.DT+10L);
 
             this.stop();
@@ -87,12 +89,12 @@ public final class Ticker
 
         while (this.running){
             try {
+                sync.waitfor();
+
                 panel.tick();
             }
             catch (Exception exc){
-                exc.printStackTrace();
             }
-            sync.waitfor();
         }
     }
 }

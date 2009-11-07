@@ -188,8 +188,8 @@ public class Modeller
     private double gridCellHeight, gridCellWidth;
 
 
-    public Modeller(){
-        super();
+    public Modeller(Screen screen){
+        super(screen);
         this.hud = new ModelDisplay(this);
         String[] models = Options.ListString("--model");
         for (String name: models){

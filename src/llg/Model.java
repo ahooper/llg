@@ -62,7 +62,7 @@ public class Model
 
     protected Line[] lines;
 
-    protected double dx, dy, tx, ty, rotate, scale;
+    protected volatile double dx, dy, tx, ty, rotate, scale, width2, height2;
 
 
     public Model(Model dynamic, Model model){
@@ -235,12 +235,14 @@ public class Model
             else
                 w = maxX;
             this.width = w;
+            this.width2 = (w / 2.0);
             double h;
             if (0 > minY)
                 h = Math.abs(minY)+maxY;
             else
                 h = maxY;
             this.height = h;
+            this.height2 = (h / 2.0);
 
             this.lines = lines;
         }

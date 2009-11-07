@@ -18,6 +18,7 @@ package llg;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Window;
 
@@ -54,9 +55,9 @@ public final class Screen
      * Applet
      */
     public Screen(Applet applet){
-        this(applet, applet.getX(), applet.getY(), applet.getWidth(), applet.getHeight());
+        this(applet, applet.getInsets(), applet.getX(), applet.getY(), applet.getWidth(), applet.getHeight());
     }
-    private Screen(java.awt.Component comp, int x, int y, int w, int h){
+    private Screen(java.awt.Component comp, Insets ins, int x, int y, int w, int h){
         this(GraphicsEnvironment.getLocalGraphicsEnvironment(),comp.getGraphicsConfiguration(),x,y,w,h);
     }
     private Screen(GraphicsEnvironment environment, GraphicsConfiguration gc, int x, int y, int w, int h){
@@ -71,7 +72,7 @@ public final class Screen
         this.init();
     }
     /**
-     * Fullscreen
+     * Fullscreen, undecorated (no insets).
      */
     public Screen(Window window){
         this(GraphicsEnvironment.getLocalGraphicsEnvironment(),window.getGraphicsConfiguration());
@@ -94,8 +95,8 @@ public final class Screen
          */
         int x = (this.display.x);
         int y = (this.display.y);
-        int w = (this.display.width - this.display.x);
-        int h = (this.display.height - this.display.y);
+        int w = (this.display.width);
+        int h = (this.display.height);
         this.display.x      = x;
         this.display.y      = y;
         this.display.width  = w;
@@ -112,7 +113,6 @@ public final class Screen
     }
     /**
      * Get a type for the container, distinct from the component.
-     * @see BackingStore$Container$Requires
      */
     public BackingStore.Type typeBackingStore(java.awt.Container container){
         if (null == container)
@@ -143,7 +143,7 @@ public final class Screen
         else
             return BackingStore.Type.CPU;
     }
-    public BackingStore getBackingStore(java.awt.Container container, BackingStore.Component component){
+    public BackingStore getBackingStore(java.awt.Container container, BackingStore.J2D component){
         BackingStore.Type type = this.typeBackingStore(container);
         switch (type){
         case CPU:

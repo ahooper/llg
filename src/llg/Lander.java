@@ -48,28 +48,27 @@ public abstract class Lander
     implements Drawable 
 {
 
-    volatile static Lander Current;
+    static volatile Lander Current;
 
     private final static int ImaginaryFootLine = 25;
     private final static int ImaginaryMatingLine = 24;
 
-    protected static final double RocketAcceleration = 0.010;
-    protected static final double RocketFuelConsumption  = 0.001;
-    protected static final double RocketFuelWinPointsRatio  = (1.0 / Surface.PointsMax);
+    protected final static double RocketAcceleration = 0.010;
+    protected final static double RocketFuelConsumption  = 0.001;
+    protected final static double RocketFuelWinPointsRatio  = (1.0 / Surface.PointsMax);
+    protected final static double maxSafeLandingSpeed = 0.25;
 
-    protected static final double maxSafeLandingSpeed = 0.25;
+    protected static volatile double gravityAcceleration = gravityAccelerationDefault;
+
+    protected static volatile boolean mainRocketOperating;
+
+    protected static volatile float fuel;
+
+    protected static volatile long saveTimeWeLandedOrCrashed;
 
     protected final static void Gravity(){
         gravityAcceleration = gravityAccelerationDefault;
     }
-
-    protected static double gravityAcceleration = gravityAccelerationDefault;
-
-    protected static boolean mainRocketOperating;
-
-    protected static float fuel;
-
-    protected static volatile long saveTimeWeLandedOrCrashed;
 
 
 
