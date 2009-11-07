@@ -4,7 +4,7 @@
   <tstamp/>
 
   <property name="src" location="src"/>
-  <property name="ver" location="ver"/>
+  <property name="ver.src" location="ver/src"/>
   <property name="bin" location="classes"/>
   <property name="dst" location="."/>
   <property name="lib" location="lib"/>
@@ -26,15 +26,7 @@
 
   <target name="compile" depends="version">
 
-    <compile src="${src}" ver="${ver}" bin="${bin}" classpath.id="lib.path"/>
-
-
-    <javac srcdir="${src}" destdir="${bin}" debug="true">
-
-      <include name="**/*.java"/>
-
-    </javac>
-
+    <compile src="${src}" ver="${ver.src}" bin="${bin}" classpath.id="lib.path"/>
   </target>
 
   <target name="jar" depends="compile" description="Create JAR with only the class files required to use Hapax">

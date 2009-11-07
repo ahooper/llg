@@ -25,7 +25,6 @@
 
       <copy todir="@{src}" overwrite="true">
         <filterset>
-          <filter token="ProjectTarget"        value="${project.application}"/>
           <filter token="VersionName"          value="${ant.project.name}"/>
           <filter token="VersionMajor"         value="${version.major}"/>
           <filter token="VersionMinor"         value="${version.minor}"/>
