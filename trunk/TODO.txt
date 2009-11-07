@@ -1,4 +1,4 @@
-                                           -*-outline-*-
+                                               -*-outline-*-
 
 
 * Camera ceiling for scales 1, 2, 3, etc.
@@ -6,6 +6,10 @@
 
 * Altitude proportion?
 ** 
+
+* Exploding Lander
+** derotate for explosion
+*** employ reflection from angle of incidence in craft rotation for explosion propagation
 
 * Orbiter
 ** orbiting

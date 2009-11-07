@@ -84,6 +84,8 @@ public class Line
     }
 
 
+    double midX, midY;
+
     /**
      * Used in particle explosion
      */
@@ -103,6 +105,8 @@ public class Line
     public Line (double x1, double y1, double x2, double y2){
         super(x1,y1,x2,y2);
         this.visible = true;
+        this.midX = Vector.Mid(x1,x2);
+        this.midY = Vector.Mid(y1,y2);
     }
     public Line(String string){
         super();
@@ -112,6 +116,8 @@ public class Line
             this.y1 = java.lang.Double.parseDouble(strtok.nextToken());
             this.x2 = java.lang.Double.parseDouble(strtok.nextToken());
             this.y2 = java.lang.Double.parseDouble(strtok.nextToken());
+            this.midX = Vector.Mid(x1,x2);
+            this.midY = Vector.Mid(y1,y2);
             this.visible = true;
         }
         else
@@ -130,7 +136,7 @@ public class Line
             this.collision = false;
     }
     /**
-     * This line is contained in the craft.
+     * When this line is contained in the craft.
      */
     public Line2D.Double toWorld(Craft frame){
         double x1 = (this.x1+frame.dx);

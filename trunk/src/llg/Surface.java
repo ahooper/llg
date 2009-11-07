@@ -98,15 +98,13 @@ public final class Surface
 
     public final boolean pad;
 
-    public double midX, midY;
-
     private volatile int points, indent;
 
     public volatile double distance;
 
     private volatile String pointsString;
     private volatile Rectangle pointsStringBounds;
-
+    private volatile boolean over;
     private volatile Surface west, east;
 
 
@@ -121,8 +119,6 @@ public final class Surface
         this.points();
         this.x2 = (this.x1 + RXP());
         this.y2 = this.y1;
-        this.midX = (this.x2 - this.x1);
-        this.midY = (this.y1);
     }
     private Surface(Surface other, boolean east){
         super();
@@ -138,18 +134,11 @@ public final class Surface
                 this.points();
                 this.x2 = (this.x1 + RXP());
                 this.y2 = this.y1;
-                this.midX = (this.x2 - this.x1);
-                this.midY = (this.y1);
             }
             else {
                 this.pad = false;
                 this.x2 = (this.x1 + RX());
                 this.y2 = RY();
-                this.midX = (this.x2 - this.x1);
-                if (this.y1 > this.y1)
-                    this.midX = (this.y2 - this.y1);
-                else
-                    this.midX = (this.y1 - this.y2);
             }
         }
         else {
@@ -164,20 +153,15 @@ public final class Surface
                 this.points();
                 this.x1 = (this.x2 - RXP());
                 this.y1 = this.y2;
-                this.midX = (this.x1 - this.x2);
-                this.midY = (this.y1);
             }
             else {
                 this.pad = false;
                 this.x1 = (this.x2 - RX());
                 this.y1 = RY();
-                this.midX = (this.x1 - this.x2);
-                if (this.y1 > this.y1)
-                    this.midX = (this.y2 - this.y1);
-                else
-                    this.midX = (this.y1 - this.y2);
             }
         }
+        this.midX = Vector.Mid(x1,x2);
+        this.midY = Vector.Mid(y1,y2);
     }
 
 
@@ -208,6 +192,8 @@ public final class Surface
     public Surface over(Point2D.Double p){
         if (this.x1 <= p.x){
             if (p.x <= this.x2){
+                this.over = true;
+
                 java.lang.Double distance = Vector.Distance(this,p);
                 if (null != distance){
                     if (p.y > this.y1)
@@ -219,13 +205,18 @@ public final class Surface
                     this.distance = -0.0;
                 else
                     this.distance = 0.0;
+
                 return this;
             }
-            else
+            else {
+                this.over = false;
                 return this.east().over(p);
+            }
         }
-        else 
+        else {
+            this.over = false;
             return this.west().over(p);
+        }
     }
     public Surface landing(){
         if (this.pad)
@@ -307,16 +298,20 @@ public final class Surface
         int y2 = (int)Math.floor(this.y2);
 
         if (this.collision)
-            g.setColor(CC);
+            g.setColor(CollA);
+        else if (this.over)
+            g.setColor(OverA);
         else
-            g.setColor(CA);
+            g.setColor(SurfA);
 
         g.drawLine(x1,y1,x2,y2);
 
         if (this.collision)
-            g.setColor(CA);
+            g.setColor(CollB);
+        else if (this.over)
+            g.setColor(OverB);
         else
-            g.setColor(CB);
+            g.setColor(SurfB);
 
         g.drawLine(x1,(y1+1),x2,(y2+1));
 
@@ -371,7 +366,10 @@ public final class Surface
         else 
             return this.west().landing(dir--,limit);
     }
-    private final static Color CA = Color.gray;
-    private final static Color CB = CA.darker();
-    private final static Color CC = Color.red.darker();
+    private final static Color SurfA = Color.gray;
+    private final static Color SurfB = SurfA.darker().darker();
+    private final static Color CollA = new Color(0xaf,0x90,0x90);
+    private final static Color CollB = CollA.darker().darker();
+    private final static Color OverA = new Color(0xaf,0xaf,0xaf);
+    private final static Color OverB = OverA.darker().darker();
 }

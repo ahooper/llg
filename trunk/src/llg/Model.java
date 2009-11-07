@@ -62,7 +62,7 @@ public class Model
 
     protected Line[] lines;
 
-    protected volatile double dx, dy, tx, ty, rotate, scale, width2, height2;
+    protected volatile double dx, dy, tx, ty, rotate, width2, height2;
 
 
     public Model(Model dynamic, Model model){
@@ -71,7 +71,6 @@ public class Model
         this.dx = dynamic.dx;
         this.dy = dynamic.dy;
         this.rotate = dynamic.rotate;
-        this.scale = dynamic.scale;
         this.tx = dynamic.tx;
         this.ty = dynamic.ty;
     }
@@ -81,13 +80,11 @@ public class Model
         this.dx = model.dx;
         this.dy = model.dy;
         this.rotate = model.rotate;
-        this.scale = model.scale;
         this.tx = model.tx;
         this.ty = model.ty;
     }
     public Model(String name){
         super();
-        this.scale = 1.0;
         InputStream in = null;
         try {
             String src = "/models/"+name+".emf";
@@ -133,11 +130,10 @@ public class Model
         return new Point2D.Double(this.dx,this.dy);
     }
     /**
-     * @return Frame bounds in the world coordinate frame (which is
-     * contained by the viewport coordinate frame).
+     * @return Center of rotation in the world coordinate frame
      */
-    public Rectangle2D.Double toWorld(){
-        return new Rectangle2D.Double(this.dx,this.dy,this.width,this.height);
+    public Point2D.Double toWorld(){
+        return new Point2D.Double(this.dx,this.dy);
     }
     public final void translate(double x, double y){
         this.dx = x;
@@ -154,20 +150,16 @@ public class Model
     public final void rotate(double r){
         this.rotate = r;
     }
-    public final void scale(double s){
-        this.scale = s;
-    }
     public void keyDown(Event evt, int key) {
     }
     public boolean mouseDown(Event evt, int x, int y){
         return false;
     }
     public void draw(Graphics2D g){
-
+        System.out.println(String.format("LD(%3.2f,%3.2f)",this.dx,this.dy));
         Graphics2D gm = (Graphics2D)g.create();
         try {
             gm.translate(this.dx,this.dy);
-            gm.scale(this.scale,this.scale);
             gm.rotate(this.rotate);
 
             for (Line el: this.lines){

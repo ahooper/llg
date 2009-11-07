@@ -142,7 +142,7 @@ public class Modeller
              */
             g.setColor(Color.white);
             this.model.translate((this.x+this.width2),(this.y+this.height2));
-            this.model.scale(this.scale);
+            //this.model.scale(this.scale);//!![TODO]!!(broke it)!!
             this.model.draw(g);
             /*
              * Overlay
