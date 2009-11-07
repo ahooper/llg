@@ -15,18 +15,11 @@
  */
 package llg;
 
-import java.awt.AlphaComposite;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
-import java.awt.Robot;
 import java.awt.Window;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Instantiate as a {@link BackingStore} manager.
@@ -57,21 +50,36 @@ public final class Screen
 
     public final Rectangle display;
 
-    private final Set<String> fontFamilies = new HashSet<String>();
-
-    private Robot robot;
-
-
     /**
-     * Get the screen from a component
+     * Applet
      */
-    public Screen(java.awt.Component comp){
-        this(GraphicsEnvironment.getLocalGraphicsEnvironment(),comp.getGraphicsConfiguration());
+    public Screen(Applet applet){
+        this(applet, applet.getX(), applet.getY(), applet.getWidth(), applet.getHeight());
     }
-    public Screen(GraphicsEnvironment environment, GraphicsConfiguration gc){
+    private Screen(java.awt.Component comp, int x, int y, int w, int h){
+        this(GraphicsEnvironment.getLocalGraphicsEnvironment(),comp.getGraphicsConfiguration(),x,y,w,h);
+    }
+    private Screen(GraphicsEnvironment environment, GraphicsConfiguration gc, int x, int y, int w, int h){
+        this(environment,gc,gc.getDevice(),x,y,w,h);
+    }
+    private Screen(GraphicsEnvironment environment, GraphicsConfiguration gc, GraphicsDevice device, int x, int y, int w, int h){
+        super();
+        this.environment = environment;
+        this.device = device;
+        this.configuration = gc;
+        this.display = new Rectangle(x,y,w,h);
+        this.init();
+    }
+    /**
+     * Fullscreen
+     */
+    public Screen(Window window){
+        this(GraphicsEnvironment.getLocalGraphicsEnvironment(),window.getGraphicsConfiguration());
+    }
+    private Screen(GraphicsEnvironment environment, GraphicsConfiguration gc){
         this(environment,gc,gc.getDevice());
     }
-    public Screen(GraphicsEnvironment environment, GraphicsConfiguration gc, GraphicsDevice device){
+    private Screen(GraphicsEnvironment environment, GraphicsConfiguration gc, GraphicsDevice device){
         super();
         this.environment = environment;
         this.device = device;
@@ -79,32 +87,7 @@ public final class Screen
         this.display = this.configuration.getBounds();
         this.init();
     }
-    /**
-     * Get the default screen 
-     */
-    public Screen(){
-        this(GraphicsEnvironment.getLocalGraphicsEnvironment());
-    }
-    public Screen(GraphicsEnvironment environment){
-        this(environment,environment.getDefaultScreenDevice());
-    }
-    /**
-     * Open a screen by index from zero on multihead host systems.
-     */
-    public Screen(int device){
-        this(GraphicsEnvironment.getLocalGraphicsEnvironment(),device);
-    }
-    public Screen(GraphicsEnvironment environment, int device){
-        this(environment,Screen.Device(environment,device));
-    }
-    public Screen(GraphicsEnvironment environment, GraphicsDevice device){
-        super();
-        this.environment = environment;
-        this.device = device;
-        this.configuration = this.device.getDefaultConfiguration();
-        this.display = this.configuration.getBounds();
-        this.init();
-    }
+
 
     private void init(){
         /*
@@ -117,17 +100,7 @@ public final class Screen
         this.display.y      = y;
         this.display.width  = w;
         this.display.height = h;
-        /*
-         */
-        String[] fontnames = this.environment.getAvailableFontFamilyNames();
-        if (null != fontnames){
-            Set<String> fontFamilies = this.fontFamilies;
-            for (int cc = 0, count = fontnames.length; cc < count; cc++){
-                fontFamilies.add(fontnames[cc]);
-            }
-        }
     }
-
     public final GraphicsEnvironment getEnvironment(){
         return this.environment;
     }
@@ -136,15 +109,6 @@ public final class Screen
     }
     public final GraphicsConfiguration getConfiguration(){
         return this.configuration;
-    }
-    public boolean hasFontFamilyName(String name){
-        return (this.fontFamilies.contains(name));
-    }
-    public Set<String> getFontFamilyNames(){
-        return this.fontFamilies;
-    }
-    public String[] getAvailableFontFamilyNames(){
-        return this.environment.getAvailableFontFamilyNames();
     }
     /**
      * Get a type for the container, distinct from the component.
@@ -189,18 +153,5 @@ public final class Screen
         default:
             throw new IllegalStateException();
         }
-    }
-    /**
-     * @return An AWT Robot for this graphics device.
-     */
-    public Robot getRobot()
-        throws java.awt.AWTException
-    {
-        Robot robot = this.robot;
-        if (null == robot){
-            robot = new Robot(this.device);
-            this.robot = robot;
-        }
-        return robot;
     }
 }

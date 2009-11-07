@@ -35,31 +35,34 @@ public final class Applet
     private final static String Title = "Lunar Lander";
 
 
-    protected final Screen screen;
+    private Screen screen;
 
-    protected final Panel panel;
+    private Panel panel;
 
 
     public Applet(){
         super();
 
-        Screen screen = new Screen(this);
-        Panel panel = new Game();
-        this.screen = screen;
         this.enableEvents(EVENT_MASK);
         this.setFocusTraversalKeysEnabled(false);
 
         this.setLayout(new LM());
-
-        this.panel = panel;
-        panel.setSize(this.getSize());
-        this.add(panel);
-
-        this.setVisible(true);
     }
 
 
     public void init(){
+
+        if (null == this.screen){
+            Screen screen = new Screen(this);
+            Panel panel = new Game();
+            this.screen = screen;
+            this.panel = panel;
+            panel.setSize(this.getSize());
+            this.add(panel);
+        }
+
+        this.setVisible(true);
+
         this.panel.init(this.screen);
     }
     public void start(){

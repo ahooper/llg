@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package llg;
-
 /*
  * Copyright (c) James P. Buzbee 1996
  * House Blend Software
@@ -33,6 +31,8 @@ package llg;
  *  Very loosly based on code with authors listed as :
  *  Alan Richardson, Pete Holzmann, James Hurt
  */
+package llg;
+
 
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -111,11 +111,12 @@ public class Font
         this.name = fontName;
         InputStream in = null;
         try {
-            in = this.getClass().getResourceAsStream("fonts/"+fontName+".jhf");
+            String src = "fonts/"+fontName+".jhf";
+            in = this.getClass().getResourceAsStream(src);
             if (null != in)
                 this.load (fontName, in);
             else
-                throw new IllegalArgumentException(fontName);
+                throw new IllegalArgumentException(String.format("Font '%s' not found at '%s'.",fontName,src));
         }
         catch (IOException e){
             throw new IllegalArgumentException(fontName,e);
