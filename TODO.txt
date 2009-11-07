@@ -21,3 +21,5 @@
 ** for 'display' dimensions
 ** use Options for screen picking?
 
+* Modeller
+** Use one scale for all models in grid (fixme)

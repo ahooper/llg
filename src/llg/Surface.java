@@ -202,9 +202,9 @@ public final class Surface
                         this.distance = distance;
                 }
                 else if (p.y > this.y1)
-                    this.distance = -0.0;
+                    this.distance = java.lang.Double.MIN_VALUE;
                 else
-                    this.distance = 0.0;
+                    this.distance = java.lang.Double.MAX_VALUE;
 
                 return this;
             }
