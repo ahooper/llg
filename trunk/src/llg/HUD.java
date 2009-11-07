@@ -31,7 +31,12 @@ public class HUD
         Instance.status2(string);
     }
 
-    protected final static Font Messages = Font.Futural.clone(3f,2f);
+    protected final static Font Messages0 = Font.Futural.clone(3f,2f);
+    protected final static Font MessagesN = Font.Futural.clone(1.1f,0.9f);
+    static {
+        Messages0.setVerticalAlignment(Font.VERTICAL_BOTTOM);
+        MessagesN.setVerticalAlignment(Font.VERTICAL_TOP);
+    }
 
     protected final static Font Markers = Font.Markers.clone(2f,1f);
 
@@ -94,14 +99,22 @@ public class HUD
         Panel panel = this.panel;
         String[] messages = this.messages;
         if (null != messages){
-            Font font = Messages;
+
             int x = 0, y = 0, h = 0;
             for (int cc = 0, count = messages.length; cc < count; cc++){
                 String message = messages[cc];
+                Font font;
+                if (0 == cc)
+                    font = Messages0;
+                else
+                    font = MessagesN;
+
                 Rectangle bounds = font.stringBounds(message);
-                h = bounds.height;
+
                 x = ((panel.width - bounds.width) /2);
                 y = (((panel.height - bounds.height) /2)+(cc * h));
+
+                h = bounds.height;
 
                 font.drawString( message, x, y, g);
             }

@@ -79,7 +79,14 @@ public final class Animator
 
     public void halt(){
         this.running = false;
-        this.stop();
+        try {
+            Thread.sleep(Sync.DT+10L);
+
+            this.stop();
+        }
+        catch (Exception exc){
+            return;
+        }
     }
     public void repaint(){
         this.sync.wake();

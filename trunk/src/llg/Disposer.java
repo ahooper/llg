@@ -32,15 +32,31 @@ public final class Disposer
     Disposer(Window window){
         super("Disposer");
 
-        if (null != window)
+        if (null != window){
             this.window = window;
+            this.setDaemon(true);
+        }
         else
             throw new IllegalArgumentException();
     }
 
 
     public final void run(){
-
-        this.window.dispose();
+        try {
+            int count = Thread.activeCount();
+            Thread list[] = new Thread[count+10];
+            count = Thread.enumerate(list);
+            for (int cc = 0; cc < count; cc++){
+                Thread T = list[cc];
+                if (this != T)
+                    T.interrupt();
+            }
+        }
+        catch (Exception exc){
+            exc.printStackTrace();
+        }
+        finally {
+            this.stop();
+        }
     }
 }

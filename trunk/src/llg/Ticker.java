@@ -72,7 +72,14 @@ public final class Ticker
 
     public void halt(){
         this.running = false;
-        this.stop();
+        try {
+            Thread.sleep(Sync.DT+10L);
+
+            this.stop();
+        }
+        catch (Exception exc){
+            return;
+        }
     }
     public final void run(){
         Sync sync = this.sync;
