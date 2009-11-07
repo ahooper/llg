@@ -1,6 +1,12 @@
                                            -*-outline-*-
 
 
+* Camera ceiling for scales 1, 2, 3, etc.
+** Include Surface and Craft in view
+
+* Altitude proportion?
+** 
+
 * Orbiter
 ** orbiting
 ** include position on vector radar

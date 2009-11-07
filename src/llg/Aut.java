@@ -24,7 +24,9 @@ import static java.lang.Thread.State.* ;
 import java.lang.reflect.Method;
 
 /**
- * On the subject of breaking deadlocks on the AWT Lock.
+ * In creating an animation thread over the 2D graphics pipeline, AWT
+ * internals are not available and inconveniences arise.  This class
+ * deals with them in the most portable way found.
  * 
  * @author jdp
  */
@@ -40,18 +42,27 @@ public abstract class Aut
         }
 
         public void run(){
-            Method wake = this.wake;
-            if (null != wake){
+            do {
                 try {
                     sleep(400);
 
-                    wake.invoke(null);
+                    int count = Thread.activeCount();
+                    if (1 < count){
+                        Thread[] list = new Thread[count];
+                        count = Thread.enumerate(list);
+                        for (Thread thread: list){
+                            if (this != thread)
+                                thread.interrupt();
+                        }
+                    }
+                    else
+                        return;
                 }
-                catch (Exception exc){
-                    exc.printStackTrace();
+                catch (Throwable thrown){
+                    thrown.printStackTrace();
                 }
             }
-            this.stop();
+            while (true);
         }
     }
 
@@ -64,6 +75,8 @@ public abstract class Aut
 
         private volatile long enter, exit;
 
+        private boolean running = true;
+
 
         Animation(Animator animator){
             super("Animation");
@@ -74,45 +87,44 @@ public abstract class Aut
         }
 
         public void enter() throws InterruptedException {
+
             this.enter = System.currentTimeMillis();
         }
         public void exit(){
+
             this.exit = System.currentTimeMillis();
         }
+        public void halt(){
+
+            this.running = false;
+        }
         public void run(){
-            try {
-                Animator animator = this.animator;
-                do {
+            Animator animator = this.animator;
+            do {
+                try {
                     long dt = (this.exit - this.enter);
-                    if (DT < dt){
-                        if (WAITING == animator.getState()){
-                            System.out.println("<!>");
+                    if (0 > dt){
+                        dt = (System.currentTimeMillis()- this.enter);
+                        if (DT < dt && WAITING == animator.getState()){
+
                             animator.interrupt();
                             break;
                         }
                     }
                     sleep(DT);
                 }
-                while (true);
+                catch (Throwable thrown){
+                    thrown.printStackTrace();
+                }
             }
-            catch (InterruptedException exc){
-            }
+            while (this.running);
         }
     }
-
-    protected final Method wake;
 
 
     protected Aut(String n){
         super("LLG Aut "+n);
         this.setDaemon(true);
-        Method wake = null;
-        try {
-            Class stk = Class.forName("sun.awt.SunToolkit");
-            wake = stk.getMethod("awtLockNotify");
-        }
-        catch (Exception exc){
-        }
-        this.wake = wake;
+        this.setPriority(MIN_PRIORITY);
     }
 }

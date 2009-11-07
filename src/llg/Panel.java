@@ -156,19 +156,19 @@ public abstract class Panel
     }
 
     public final void start(){
-        this.viewport = null;
-        this.requestFocus();
-        this.dx = 0.0;
-        this.dy = 0.0;
-        this.scale = 1.0;
 
-        if (null == this.animator){
-            this.animator = new Animator(this.graphics);
-            this.animator.start();
-        }
-        if (null == this.ticker){
-            this.ticker = new Ticker(this);
-            this.ticker.start();
+        if (null != this.graphics){
+
+            this.requestFocus();
+
+            if (null == this.animator){
+                this.animator = new Animator(this.graphics);
+                this.animator.start();
+            }
+            if (null == this.ticker){
+                this.ticker = new Ticker(this);
+                this.ticker.start();
+            }
         }
     }
     public final void stop(){
