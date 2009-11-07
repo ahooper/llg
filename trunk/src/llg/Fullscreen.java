@@ -91,30 +91,24 @@ public final class Fullscreen
             this.panel.start();
 
             break;
-
         case WindowEvent.WINDOW_CLOSING:
 
             this.close();
-
             break;
-
         case WindowEvent.WINDOW_CLOSED:
+
             System.exit(0);
             break;
         case WindowEvent.WINDOW_ICONIFIED:
+
             if (null != this.panel){
                 this.panel.stop();
             }
             break;
         case WindowEvent.WINDOW_DEICONIFIED:
-        case WindowEvent.WINDOW_ACTIVATED:
+
             if (null != this.panel){
                 this.panel.start();
-            }
-            break;
-        case WindowEvent.WINDOW_DEACTIVATED:
-            if (null != this.panel){
-                this.panel.stop();
             }
             break;
         }
@@ -125,17 +119,20 @@ public final class Fullscreen
         switch(e.getID()){
         case ComponentEvent.COMPONENT_RESIZED:
         case ComponentEvent.COMPONENT_MOVED:
+
             if (null != this.panel){
                 Screen screen = new Screen(this);
                 this.panel.init(screen);
             }
             break;
         case ComponentEvent.COMPONENT_SHOWN:
+
             if (null != this.panel){
                 this.panel.start();
             }
             break;
         case ComponentEvent.COMPONENT_HIDDEN:
+
             if (null != this.panel){
                 this.panel.stop();
             }

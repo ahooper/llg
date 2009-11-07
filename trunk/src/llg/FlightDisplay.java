@@ -18,9 +18,11 @@ package llg;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 
 /**
- * Game HUD
+ * Flight instruments display game and craft statistics.
  * 
  * @author jdp
  */
@@ -166,7 +168,12 @@ public final class FlightDisplay
 
         private int top, left, diam, radius, cx, cy, nx, ny;
 
+        private double prop;
+
         private Color color;
+
+        private Shape clip;
+
 
         public Vector(float sw){
             super();
@@ -182,6 +189,10 @@ public final class FlightDisplay
             this.left = game.width-this.diam-margin;
             this.cy = (this.top + this.radius);
             this.cx = (this.left + this.radius);
+
+            this.clip = new Ellipse2D.Float(this.left,this.top,this.diam,this.diam);
+
+            this.prop = ( ((double)this.radius) / Lander.maxSafeLandingSpeed);
 
             this.update();
         }
@@ -201,8 +212,11 @@ public final class FlightDisplay
             else
                 this.color = Color.green;
 
-            this.nx = this.cx + (int)(this.radius * dx);
-            this.ny = this.cy + (int)(this.radius * dy);
+            dx = (dx * this.prop);
+            dy = (dy * this.prop);
+
+            this.nx = this.cx+(int)(dx);
+            this.ny = this.cy+(int)(dy);
         }
         public void draw(Graphics2D g){
 
@@ -212,9 +226,13 @@ public final class FlightDisplay
 
             g.drawOval((this.cx-1),(this.cy-1),2,2);
 
+            g.setClip(this.clip);
+
             g.drawOval((this.nx-1),(this.ny-1),2,2);
 
             g.drawLine(this.cx,this.cy,this.nx,this.ny);
+
+            g.setClip(null);
         }
     }
     public static class Altitude {

@@ -43,12 +43,7 @@ public class ExplodingLander
         mainRocketOperating = false;
         saveTimeWeLandedOrCrashed = System.currentTimeMillis();
         if (!lander.intro){
-            if (0f < fuel){
-                Game.Instance.message("Crash!");
-            }
-            else {
-                Game.Instance.message("Game over!");
-            }
+            Game.Instance.landerCrash();
         }
 
         for (int cc = 0, count = this.lines.length; cc < count; cc++ ){

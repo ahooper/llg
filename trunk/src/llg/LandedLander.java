@@ -32,18 +32,16 @@ public final class LandedLander
 
     LandedLander(Lander lander, Tickable collision){
         super(lander);
-        if (null != collision)
+        if (null != collision){
             this.collision = collision;
+
+            saveTimeWeLandedOrCrashed = System.currentTimeMillis(); 
+
+            if (!lander.intro)
+                Game.Instance.landerLanded();
+        }
         else
             throw new IllegalArgumentException();
-
-        saveTimeWeLandedOrCrashed = System.currentTimeMillis(); 
-        if (!lander.intro){
-            if (0f < fuel)
-                Game.Instance.message("Success!");
-            else 
-                Game.Instance.message("Game over!");
-        }
     }
 
 

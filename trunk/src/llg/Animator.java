@@ -78,7 +78,7 @@ public final class Animator
             this.aut.start();
         }
         else
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Missing graphics");
     }
 
 
@@ -118,12 +118,10 @@ public final class Animator
                 }
                 catch (InterruptedException aux){
 
-                    System.out.println(">!<");
-
                     interrupted();//(clear interrupt)
                 }
                 catch (Exception exc){
-                    System.out.println(">?<");
+                    exc.printStackTrace();
                 }
                 finally {
                     aut.exit();
@@ -131,8 +129,7 @@ public final class Animator
             }
         }
         finally {
-            aut.interrupt();
-            aut.stop();
+            aut.halt();
             graphics.flush();
         }
     }

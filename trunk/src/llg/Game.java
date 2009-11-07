@@ -170,6 +170,11 @@ public final class Game
 
         new FlyingLander(Luna.Instance.landing());
 
+        this.messagesClear();
+        this.message("Lunar Lander!");
+        this.message("Arrow Keys NAV");
+        this.message("Escape Key NEW");
+
         this.hud.init(true);
     }
     public void newFlight(){
@@ -180,5 +185,21 @@ public final class Game
 
         this.hud.init(false);
     }
+    public void landerCrash(){
+        this.messagesClear();
 
+        if (0f < Lander.fuel){
+            this.message("Crash!");
+        }
+        else {
+            this.message("Game over!");
+        }
+    }
+    public void landerLanded(){
+
+        if (0f < Lander.fuel)
+            this.message("Success!");
+        else 
+            this.message("Game over!");
+    }
 }
