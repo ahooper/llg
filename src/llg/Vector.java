@@ -53,6 +53,18 @@ public final class Vector {
         else
             return (b - a);
     }
+    public static double Mid( double a, double b){
+        if (a == b)
+            return a;
+        else
+            return ((a + b)/2.0);
+    }
+    public static double MidX( Line2D.Double line){
+        return Mid(line.x1,line.x2);
+    }
+    public static double MidY( Line2D.Double line){
+        return Mid(line.y1,line.y2);
+    }
     public static double Magnitude( Point2D.Double p1, Point2D.Double p2){
         return Math.sqrt(Magnitude2(p1.x, p1.y, p2.x, p2.y));
     }

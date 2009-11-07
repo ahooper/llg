@@ -97,12 +97,11 @@ public abstract class Lander
 
 
     public Line2D.Double feet(){
-        return this.lines[ImaginaryFootLine].toWorld(this);
+        return (this.lines[ImaginaryFootLine].toWorld(this));
     }
     public Point2D.Double feetMidpoint(){
-        Line2D.Double feet = this.lines[ImaginaryFootLine].toWorld(this);
-        double mx = (Vector.Dim(feet.x2,feet.x1) / 2.0);
-        return new Point2D.Double(mx,feet.y1);
+        Line2D.Double feet = (this.lines[ImaginaryFootLine].toWorld(this));
+        return new Point2D.Double(Vector.MidX(feet),Vector.MidY(feet));
     }
     public Line2D.Double mate(){
         return this.lines[ImaginaryMatingLine].toWorld(this);
