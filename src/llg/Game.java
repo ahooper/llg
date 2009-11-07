@@ -68,7 +68,7 @@ public final class Game
         double px = lander.x;
         double py = lander.y;
 
-        if (300 < alt){
+        if (200 < alt){
 
             this.ds(1.0);
 
