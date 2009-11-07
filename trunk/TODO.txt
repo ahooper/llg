@@ -1,0 +1,13 @@
+                                           -*-outline-*-
+
+
+* Orbiter
+** orbiting
+** include position on vector radar
+** rendezvous
+
+* Screen
+** constructors (Frame) (Applet)
+** for 'display' dimensions
+** use Options for screen picking?
+
