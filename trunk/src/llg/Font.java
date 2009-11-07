@@ -111,7 +111,7 @@ public class Font
         this.name = fontName;
         InputStream in = null;
         try {
-            String src = "fonts/"+fontName+".jhf";
+            String src = "/fonts/"+fontName+".jhf";
             in = this.getClass().getResourceAsStream(src);
             if (null != in)
                 this.load (fontName, in);
