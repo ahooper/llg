@@ -90,11 +90,12 @@ public class Model
         this.scale = 1.0;
         InputStream in = null;
         try {
-            in = this.getClass().getResourceAsStream("models/"+name+".emf");
+            String src = "/models/"+name+".emf";
+            in = this.getClass().getResourceAsStream(src);
             if (null != in)
                 this.read (new InputStreamReader(in,Ascii));
             else
-                throw new IllegalArgumentException(name);
+                throw new IllegalArgumentException(String.format("Model '%s' not found at '%s'.",name,src));
         }
         catch (IOException e){
             throw new IllegalArgumentException(name,e);

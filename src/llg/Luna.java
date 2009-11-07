@@ -76,7 +76,7 @@ public final class Luna
         Point2D.Double fp = lander.feetMidpoint();
         Surface over = this.list.over(fp);
         this.list = over;
-        System.out.println(String.format("%3.2f (%3.2f,%3.2f)",over.distance,fp.x,fp.y));
+        //System.out.println(String.format("%3.2f (%3.2f,%3.2f)",over.distance,fp.x,fp.y));
         return over;
     }
     public Surface collides(Craft actor){
