@@ -83,7 +83,10 @@ public abstract class Panel
         java.awt.Container parent = this.getParent();
         if (parent instanceof Fullscreen)
             ((Fullscreen)parent).close();
-        //else if (parent instanceof Applet
+        else if (this instanceof Game){
+            Game game = (Game)this;
+            game.newGame();
+        }
     }
     public final void message(String m){
         this.hud.message(m);

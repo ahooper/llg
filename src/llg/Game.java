@@ -164,21 +164,21 @@ public final class Game
     }
     public void newGame(){
 
+        this.ds(2);
+
         Luna.Instance.reset();
 
         new FlyingLander(Luna.Instance.landing());
 
         this.hud.init(true);
-
-        this.ds(2);
     }
     public void newFlight(){
+
+        this.ds(2);
 
         new FlyingLander();
 
         this.hud.init(false);
-
-        this.ds(2);
     }
 
 }
