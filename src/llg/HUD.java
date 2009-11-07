@@ -112,13 +112,11 @@ public class HUD
                 Rectangle bounds = font.stringBounds(message);
 
                 x = ((panel.width - bounds.width) /2);
-                y = (((panel.height - bounds.height) /2)+(cc * h));
+                y = (((panel.height - bounds.height) /2)+(h));
 
                 font.drawString( message, x, y, g);
 
-                h = bounds.height;
-                if (1 > h)
-                    h = 60;
+                h += bounds.height;
             }
         }
 
