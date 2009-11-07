@@ -52,7 +52,7 @@ public final class Applet
 
     public void init(){
 
-        if (null == this.screen){
+        if (0 == this.countComponents()){
             Screen screen = new Screen(this);
             Panel panel = new Game();
             this.screen = screen;
@@ -70,5 +70,12 @@ public final class Applet
     }
     public void stop(){
         this.panel.stop();
+    }
+    public void destroy(){
+        this.screen = null;
+        this.panel = null;
+    }
+    public String getAppletInfo(){
+        return Version.Applet;
     }
 }
