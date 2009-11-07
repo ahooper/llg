@@ -114,9 +114,11 @@ public class HUD
                 x = ((panel.width - bounds.width) /2);
                 y = (((panel.height - bounds.height) /2)+(cc * h));
 
-                h = bounds.height;
-
                 font.drawString( message, x, y, g);
+
+                h = bounds.height;
+                if (1 > h)
+                    h = 60;
             }
         }
 

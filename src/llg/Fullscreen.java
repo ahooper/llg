@@ -72,9 +72,15 @@ public final class Fullscreen
             this.closed = true;
 
             this.panel.stop();
+            /*
+             * N.B. Called from AWT Event Queue via window event or
+             * key event.
+             */
+            java.awt.Window window = (java.awt.Frame)this.getParent();
 
-            new Disposer((java.awt.Frame)this.getParent()).start();
+            window.hide();
 
+            window.dispose();
         }
     }
     @Override
