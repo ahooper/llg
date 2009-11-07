@@ -27,15 +27,12 @@ public class Craft
     protected final static double gravityAccelerationDefault = 0.003;
 
 
-    /** 
-     * Faking it
-     */
     protected boolean intro;
 
-    protected int attitude;
+    protected volatile int attitude;
 
-    private double attitudeX;
-    private double attitudeY;
+    private volatile double attitudeX;
+    private volatile double attitudeY;
 
 
     public Craft(Craft dynamic, Model model){
@@ -62,11 +59,11 @@ public class Craft
         return false;
     }
     public final double altitude(){
-        double dx = this.dx;
-        if (0 < dx)
-            return Math.abs(Surface.Yavg - dx);
+        double dy = this.dy;
+        if (dy < Surface.Yavg)
+            return Vector.Dim(dy,Surface.Yavg);
         else
-            return (Surface.Yavg + dx);
+            return -Vector.Dim(dy,Surface.Yavg);
     }
     protected void rotateLeft(){
         this.attitude += 1;

@@ -36,11 +36,14 @@ public final class FlyingLander
 
 
     FlyingLander(Surface landto){
-        this(1f,(landto.midX - (Model.Lander.width / 2.0)),(landto.y1-15.0),0f,-0.001);
+        this(1f,(landto.midX-Model.Lander.width2),(landto.y1-Model.Lander.height2-2.0),0f,0.001);
         Game.Instance.message("Lunar Lander!");
         Game.Instance.message("Arrow Keys Nav");
         Game.Instance.message("Escape Key New");
         this.intro = true;
+    }
+    FlyingLander(Surface landto, boolean newFlight){
+        this(1f,(landto.midX-Model.Lander.width2),(landto.y1-Model.Lander.height2-1.0),0f,-RocketAcceleration);
     }
     FlyingLander (Lander lander){
         super(lander);
@@ -48,15 +51,13 @@ public final class FlyingLander
         Gravity();
         rotate();
     }
-    FlyingLander(){
-        this(1f,90,140,0.01,0.2);
-    }
     private FlyingLander (float ff, double dx, double dy, double tx, double ty){
         super( ff, dx, dy);
         this.motion(tx,ty);
         Game.Instance.messagesClear();
         Gravity();
         rotate();
+        tick();
     }
 
 

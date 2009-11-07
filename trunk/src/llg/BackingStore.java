@@ -45,22 +45,14 @@ public abstract class BackingStore
     };
 
     /**
-     * Subclass of AWT Container. 
-     */
-    public interface Container {
-
-    }
-    /**
      * Subclass of AWT Component.
      */
-    public interface Component 
+    public interface J2D
         extends ImageObserver
     {
+        public Object getTreeLock();
 
-
-        public void paint(Graphics g);
-
-        public void paintIn(Graphics2D g);
+        public void paint(Graphics2D g);
 
         public int getWidth();
 
@@ -89,7 +81,7 @@ public abstract class BackingStore
         public final static Type TYPE = Type.CPU;
 
 
-        public CPU(Component component){
+        public CPU(J2D component){
             super(component);
 
             this.reinit();
@@ -98,26 +90,13 @@ public abstract class BackingStore
         public Type getType(){
             return TYPE;
         }
-        public void blit(){
+        public void paint(){
 
-            Graphics2D g = (Graphics2D)this.component.getGraphics();
-            try {
-                this.blitIn(g);
-            }
-            finally {
-                g.dispose();
-            }
-        }
-        public void paint(int x, int y, int w, int h){
+            J2D component = this.component;
 
-            Component component = this.component;
-            boolean clip = (0 < w && 0 < h);
             Graphics2D g = (Graphics2D)component.getGraphics();
             try {
-                if (clip){
-                    g.clipRect(x,y,w,h);
-                }
-                component.paintIn(g);
+                component.paint(g);
             }
             finally {
                 g.dispose();
@@ -136,7 +115,7 @@ public abstract class BackingStore
         private BufferStrategy bufferStrategy;
 
 
-        public GPU(Component component){
+        public GPU(J2D component){
             super(component);
 
             this.reinit();
@@ -148,7 +127,7 @@ public abstract class BackingStore
         }
         public boolean reinit(){
             if (super.reinit()){
-                Component component = this.component;
+                J2D component = this.component;
                 component.createBufferStrategy(2);
                 this.bufferStrategy = component.getBufferStrategy();
                 return (null != this.bufferStrategy);
@@ -156,32 +135,10 @@ public abstract class BackingStore
             else
                 return false;
         }
-        public void blit(){
+        public void paint(){
 
-            BufferStrategy bufferStrategy = this.bufferStrategy;
-            Graphics2D g;
-            do {
-                do {
-                    g = (Graphics2D)bufferStrategy.getDrawGraphics();
-                    if (g != null){
-                        try {
-                            this.blitIn(g);
-                        }
-                        finally {
-                            g.dispose();
-                        }
-                    }
-                }
-                while (bufferStrategy.contentsRestored());
+            J2D component = this.component;
 
-                bufferStrategy.show();
-            }
-            while (bufferStrategy.contentsLost());
-        }
-        public void paint(int x, int y, int w, int h){
-
-            Component component = this.component;
-            boolean clip = (0 < w && 0 < h);
             BufferStrategy bufferStrategy = this.bufferStrategy;
             if (null != bufferStrategy){
                 Graphics2D g;
@@ -190,10 +147,7 @@ public abstract class BackingStore
                         g = (Graphics2D)bufferStrategy.getDrawGraphics();
                         if (g != null){
                             try {
-                                if (clip){
-                                    g.clipRect(x,y,w,h);
-                                }
-                                component.paintIn(g);
+                                component.paint(g);
                             }
                             finally {
                                 g.dispose();
@@ -208,21 +162,18 @@ public abstract class BackingStore
             else
                 throw new IllegalStateException(component.toString());
         }
-        public void blit(Graphics g){
-            this.blit();
-        }
     }
 
 
     private final static long lt32 = 0x7fffffffffffff00L;
 
 
-    protected final Component component;
+    protected final J2D component;
 
-    private BufferedImage backing;
+    private volatile BufferedImage backing;
 
 
-    protected BackingStore(Component component){
+    protected BackingStore(J2D component){
         super();
         if (null != component){
             this.component = component;
@@ -242,7 +193,7 @@ public abstract class BackingStore
     public boolean isTypeGPU(){
         return (Type.GPU == this.getType());
     }
-    public final Component getComponent(){
+    public final J2D getComponent(){
         return this.component;
     }
     public final Toolkit getToolkit(){
@@ -260,13 +211,18 @@ public abstract class BackingStore
     public final BufferedImage getBacking(){
         return this.backing;
     }
+    public void flush(){
+        BufferedImage backing = this.backing;
+        if (null != backing)
+            backing.flush();
+    }
     public final boolean hasComponentResized(){
-        Component component = this.component;
+        J2D component = this.component;
         return (this.width != component.getWidth() ||
                 this.height != component.getHeight());
     }
     public final boolean hasNotComponentResized(){
-        Component component = this.component;
+        J2D component = this.component;
         return (this.width == component.getWidth() &&
                 this.height == component.getHeight());
     }
@@ -275,7 +231,7 @@ public abstract class BackingStore
         if (null == backing || this.hasComponentResized()){
             if (null != backing)
                 backing.flush();
-            Component component = this.component;
+            J2D component = this.component;
             this.width = component.getWidth();
             this.height = component.getHeight();
             if (0 < this.width && 0 < this.height){
@@ -285,41 +241,8 @@ public abstract class BackingStore
         }
         return false;
     }
-    public final Graphics2D createGraphics(){
-        BufferedImage backing = this.backing;
-        if (null != backing){
-            return backing.createGraphics();
-        }
-        else
-            throw new IllegalStateException();
-    }
-    public final Graphics2D createGraphics(int x, int y, int w, int h){
-        BufferedImage backing = this.backing;
-        if (null != backing){
-            Graphics2D g = backing.createGraphics();
-            g.clipRect(x,y,w,h);
-            return g;
-        }
-        else
-            throw new IllegalStateException();
-    }
-    /**
-     * Write CPU buffer to graphics
-     * 
-     * Animator entry wants to grab the AWT lock.
-     */
-    public abstract void blit();
+    public abstract void paint();
 
-    /**
-     * Call component paint with graphics
-     * 
-     * Animator entry wants to grab the AWT lock.
-     */
-    public abstract void paint(int x, int y, int h, int w);
-
-    public void paint(){
-        this.paint(0,0,0,0);
-    }
     protected final void blitIn(Graphics g){
         BufferedImage backing = this.backing;
         if (null != backing)
@@ -329,11 +252,5 @@ public abstract class BackingStore
         BufferedImage backing = this.backing;
         if (null != backing)
             g.drawImage(backing,0,0,observer);
-    }
-    public void blit(Graphics g){
-        this.blitIn(g);
-    }
-    public void blit(Graphics g, ImageObserver observer){
-        this.blitIn(g,observer);
     }
 }

@@ -45,17 +45,6 @@ public final class LandedLander
                 Game.Instance.message("Game over!");
         }
     }
-    LandedLander(){
-        this(1f,90,90);
-    }
-    private LandedLander (float ff, double dx, double dy){
-        super( ff, dx, dy);
-        saveTimeWeLandedOrCrashed = System.currentTimeMillis(); 
-        Gravity();
-        Game.Instance.messagesClear();
-        Game.Instance.message("Lunar Lander!");
-    }
-
 
 
     public boolean isLanded(){
@@ -67,7 +56,7 @@ public final class LandedLander
             this.collision.tick();
     }
     public void launch(){
-
+        this.tx = 0;
         this.ty = -0.15;
 
         this.changeStateToFlyingLander();

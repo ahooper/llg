@@ -63,15 +63,20 @@ public final class Animator
 
     private final Sync sync = new Sync();
 
+    private final Aut.Animation aut;
+
     private volatile boolean running = true;
 
 
     Animator(BackingStore graphics){
-        super("Animator");
+        super("LLG Animator");
         this.setDaemon(true);
         this.setPriority(MIN_PRIORITY+1);
-        if (null != graphics)
+        if (null != graphics){
             this.graphics = graphics;
+            this.aut = new Aut.Animation(this);
+            this.aut.start();
+        }
         else
             throw new IllegalArgumentException();
     }
@@ -80,6 +85,8 @@ public final class Animator
     public void halt(){
         this.running = false;
         try {
+            this.interrupt();
+
             Thread.sleep(Sync.DT+10L);
 
             this.stop();
@@ -97,17 +104,36 @@ public final class Animator
         BackingStore graphics = this.graphics;
 
         Sync sync = this.sync;
+        Aut.Animation aut = this.aut;
+        try {
+            while (this.running){
+                try {
+                    sync.waitfor();
 
-        while (this.running){
-            try {
-                sync.waitfor();
+                    graphics.reinit();
 
-                graphics.reinit();
-                graphics.paint();
+                    aut.enter();
+
+                    graphics.paint();
+                }
+                catch (InterruptedException aux){
+
+                    System.out.println(">!<");
+
+                    interrupted();//(clear interrupt)
+                }
+                catch (Exception exc){
+                    System.out.println(">?<");
+                }
+                finally {
+                    aut.exit();
+                }
             }
-            catch (Exception exc){
-                exc.printStackTrace();
-            }
+        }
+        finally {
+            aut.interrupt();
+            aut.stop();
+            graphics.flush();
         }
     }
 }

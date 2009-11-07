@@ -16,6 +16,7 @@
 package llg;
 
 import java.awt.AWTEvent;
+import java.awt.event.ComponentEvent;
 
 /**
  * Applet panel driver.
@@ -42,7 +43,6 @@ public final class Applet
 
     public Applet(){
         super();
-
         this.enableEvents(EVENT_MASK);
         this.setFocusTraversalKeysEnabled(false);
 
@@ -54,7 +54,7 @@ public final class Applet
 
         if (0 == this.countComponents()){
             Screen screen = new Screen(this);
-            Panel panel = new Game();
+            Panel panel = new Game(screen);
             this.screen = screen;
             this.panel = panel;
             panel.setSize(this.getSize());
@@ -70,6 +70,8 @@ public final class Applet
     }
     public void stop(){
         this.panel.stop();
+
+        new Aut.Shutdown().start();
     }
     public void destroy(){
         this.screen = null;
@@ -77,5 +79,28 @@ public final class Applet
     }
     public String getAppletInfo(){
         return Version.Applet;
+    }
+    @Override
+    protected void processComponentEvent(ComponentEvent e) {
+
+        switch(e.getID()){
+        case ComponentEvent.COMPONENT_RESIZED:
+        case ComponentEvent.COMPONENT_MOVED:
+            if (null != this.panel){
+                Screen screen = new Screen(this);
+                this.panel.init(screen);
+            }
+            break;
+        case ComponentEvent.COMPONENT_SHOWN:
+            if (null != this.panel){
+                this.panel.start();
+            }
+            break;
+        case ComponentEvent.COMPONENT_HIDDEN:
+            if (null != this.panel){
+                this.panel.stop();
+            }
+            break;
+        }
     }
 }
