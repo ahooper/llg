@@ -1,0 +1,15 @@
+#summary Intro to developing Gap Data
+#labels Featured
+
+
+ Of course, everyone is welcome to get a copy of LLG!
+
+ Please send bug reports and enhancement requests to the project "Issues" database.
+
+= Development =
+
+ Of course we follow the traditions with the all or nothing access model of most open source projects.  We need to get to know you before flipping the switch.
+
+== How To ==
+
+ Please send mail letting us know your interest in contributing to Gap Data.  With some conversation and experience with each other we may be able to arrive at the high level of interest and confidence required to delegate commit access.

@@ -1,0 +1,20 @@
+#summary Guide to the codebase
+#labels Featured,Documentation
+
+ = Prerequisites = 
+ * Java JDK 1.5 or later
+ * Apache Ant 1.6.5 or later
+
+ = Installation =
+
+ The source repo checks- out and builds an executable jar.
+
+ Run using
+{{{
+ if ant build; 
+ then
+  java -jar llg-*.jar;
+ else
+  echo "Error @ ant";
+ fi
+}}}
