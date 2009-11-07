@@ -1,0 +1,3 @@
+#summary gadget test
+
+ <wiki:gadget url="http://llg.googlecode.com/svn/web/llg-gadget.xml" border="0"/>
