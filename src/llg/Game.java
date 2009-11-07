@@ -119,12 +119,7 @@ public final class Game
         switch (key){
 
         case Event.ESCAPE:
-
-            if (Lander.Current.isLanded())
-
-                this.close();
-            else
-                this.newGame();
+            this.newGame();
             return true;
 
         case Event.F1:
@@ -174,6 +169,7 @@ public final class Game
         this.message("Lunar Lander!");
         this.message("Arrow Keys NAV");
         this.message("Escape Key NEW");
+        this.message("Space Key BUMP");
 
         this.hud.init(true);
     }
