@@ -100,12 +100,13 @@ public final class FlightDisplay
 
         private int top, left, bottom, height, xm, xt;
 
-        private int marker;
+        private volatile int marker;
 
-        private Color color;
+        private volatile Color color;
 
-        private String string;
-        private Rectangle stringBounds;
+        private volatile String string;
+
+        private volatile Rectangle stringBounds;
 
 
         public Fuel(float sw, float sh){
@@ -166,13 +167,15 @@ public final class FlightDisplay
 
         private final float sw;
 
-        private int top, left, diam, radius, cx, cy, nx, ny;
+        private int top, left, diam, radius, cx, cy;
 
         private double prop;
 
-        private Color color;
-
         private Shape clip;
+
+        private volatile int nx, ny;
+
+        private volatile Color color;
 
 
         public Vector(float sw){
@@ -246,12 +249,13 @@ public final class FlightDisplay
 
         private int top, left, bottom, height, xm, xt;
 
-        private int marker;
+        private volatile int marker;
 
-        private Color color;
+        private volatile Color color;
 
-        private String string;
-        private Rectangle stringBounds;
+        private volatile String string;
+
+        private volatile Rectangle stringBounds;
 
 
         public Altitude(float sw, float sh){
