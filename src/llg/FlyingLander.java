@@ -38,6 +38,8 @@ public final class FlyingLander
     FlyingLander(Surface landto){
         this(1f,(landto.midX - (Model.Lander.width / 2.0)),(landto.y1-15.0),0f,-0.001);
         Game.Instance.message("Lunar Lander!");
+        Game.Instance.message("Arrow Keys Nav");
+        Game.Instance.message("Escape Key New");
         this.intro = true;
     }
     FlyingLander (Lander lander){

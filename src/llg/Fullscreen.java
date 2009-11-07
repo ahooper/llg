@@ -43,6 +43,8 @@ public final class Fullscreen
 
     protected final Panel panel;
 
+    private volatile boolean closed;
+
 
     public Fullscreen(Frame frame, Screen screen, Panel panel){
         super(frame,Title,false,screen.getConfiguration());
@@ -66,18 +68,14 @@ public final class Fullscreen
 
 
     public void close(){
-        this.panel.stop();
+        if (!this.closed){
+            this.closed = true;
 
-        try {
-            Frame parent = (Frame)this.getParent();
-            parent.hide();
-            this.hide();
-            parent.dispose();
-            this.dispose();
-            Thread.sleep(120);
+            this.panel.stop();
+
+            new Disposer((java.awt.Frame)this.getParent()).start();
+
         }
-        catch (Exception x){}
-        System.exit(0);
     }
     @Override
     public void processWindowEvent(WindowEvent event) {
@@ -94,16 +92,7 @@ public final class Fullscreen
 
         case WindowEvent.WINDOW_CLOSING:
 
-            this.panel.stop();
-
-            new Disposer((java.awt.Frame)this.getParent()).start();
-
-            try {
-                Thread.sleep(150);
-            }
-            catch (InterruptedException exc){
-            }
-            System.exit(0);
+            this.close();
 
             break;
 
