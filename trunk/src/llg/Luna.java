@@ -15,6 +15,7 @@
  */
 package llg;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -32,41 +33,56 @@ public final class Luna
     public final static Luna Instance = new Luna();
     static void SInit(){
     }
+    private final static Color ColorB = new Color(0x20,0x20,0x20);
 
 
     private volatile Surface list;
 
+    final Font fontP = Font.Futural.clone(0.6f,0.4f);
+
 
     private Luna(){
         super();
-        this.list = new Surface();
     }
 
 
     public void destroy(){
-        this.list.destroy();
+        if (null != this.list){
+            this.list = null;
+            this.list.destroy();
+        }
     }
     public void reset(){
-        if (this.list.isNotNew()){
+        if (null == this.list)
+            this.list = new Surface();
+        else {
             this.list.destroy();
             this.list = new Surface();
         }
     }
-    public void draw(Graphics2D g){
-
+    public void draw(Graphics2D ig){
+        
         Rectangle2D.Double viewport = Panel.Instance.toWorld();
 
         Surface center = this.list;
+        Graphics2D g = (Graphics2D)ig.create();
+        g.setColor(ColorB);
+        g.fillRect((int)viewport.x,(int)Surface.Ymax,(int)viewport.width,(int)viewport.height);
 
-        Surface east = center;
-        while (viewport.contains(east.x1,east.y1)){
-            east.draw(g);
-            east = east.east();
+        try {
+            Surface east = center;
+            while (viewport.contains(east.x1,east.y1)){
+                east.draw(g);
+                east = east.east();
+            }
+            Surface west = center.west();
+            while (viewport.contains(west.x2,west.y2)){
+                west.draw(g);
+                west = west.west();
+            }
         }
-        Surface west = center.west();
-        while (viewport.contains(west.x2,west.y2)){
-            west.draw(g);
-            west = west.west();
+        finally {
+            g.dispose();
         }
     }
     public Surface landing(){

@@ -15,10 +15,13 @@
  */
 package llg;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.Random;
 
@@ -57,7 +60,8 @@ public final class Surface
         }
         return clone;
     }
-    private final static Font font = Font.Futural.clone(0.6f,0.4f);
+    private final static Stroke StrokeS = new BasicStroke(3.9f,1,1);
+    private final static Stroke StrokeP = new BasicStroke(0.5f,1,1);
 
     private final static java.util.Random R = new java.util.Random();
     private final static double XPmin = 48;
@@ -66,8 +70,10 @@ public final class Surface
     private final static double Xmax = 52;
 
     private final static double Ymin = 2;
-    private final static double Ymax = 16;
+    public final static double Ymax = 16;
     public final static double Yavg = ((Ymin + Ymax) / 2.0);
+
+    private final static int PointsY = (int)(Ymax + 6);
 
     private final static int PP = 8;
     private final static int PP2 = (PP*2);
@@ -97,6 +103,8 @@ public final class Surface
 
 
     public final boolean pad;
+    private final Path2D.Double basement;
+    private final Path2D.Double lineHi, lineLo, linePad;
 
     private volatile int points, indent;
 
@@ -106,7 +114,6 @@ public final class Surface
     private volatile Rectangle pointsStringBounds;
     private volatile boolean over;
     private volatile Surface west, east;
-
 
     /**
      * The first surface element constructed is a pad.
@@ -119,6 +126,12 @@ public final class Surface
         this.points();
         this.x2 = (this.x1 + RXP());
         this.y2 = this.y1;
+        this.midX = Vector.Mid(this.x1,this.x2);
+        this.midY = Vector.Mid(this.y1,this.y2);
+        this.basement = Basement(this);
+        this.lineHi = LineHi(this);
+        this.lineLo = LineLo(this);
+        this.linePad = LinePad(this);
     }
     private Surface(Surface other, boolean east){
         super();
@@ -160,8 +173,15 @@ public final class Surface
                 this.y1 = RY();
             }
         }
-        this.midX = Vector.Mid(x1,x2);
-        this.midY = Vector.Mid(y1,y2);
+        this.midX = Vector.Mid(this.x1,this.x2);
+        this.midY = Vector.Mid(this.y1,this.y2);
+        this.basement = Basement(this);
+        this.lineHi = LineHi(this);
+        this.lineLo = LineLo(this);
+        if (this.pad)
+            this.linePad = LinePad(this);
+        else
+            this.linePad = null;
     }
 
 
@@ -291,42 +311,61 @@ public final class Surface
     }
     public void draw(Graphics2D g){
 
-        int x1 = (int)Math.floor(this.x1);
-        int y1 = (int)Math.floor(this.y1);
+        g.setColor(ColorSurfC);
+        g.setClip(this.basement);
+        g.fill(this.basement);
 
-        int x2 = (int)Math.floor(this.x2);
-        int y2 = (int)Math.floor(this.y2);
-
-        if (this.collision)
-            g.setColor(CollA);
-        else if (this.over)
-            g.setColor(OverA);
-        else
-            g.setColor(SurfA);
-
-        g.drawLine(x1,y1,x2,y2);
+        g.setStroke(StrokeS);
 
         if (this.collision)
-            g.setColor(CollB);
+            g.setColor(ColorCollB);
         else if (this.over)
-            g.setColor(OverB);
+            g.setColor(ColorOverB);
         else
-            g.setColor(SurfB);
+            g.setColor(ColorSurfB);
 
-        g.drawLine(x1,(y1+1),x2,(y2+1));
+        g.draw(this.lineLo);
+
+        if (this.collision)
+            g.setColor(ColorCollA);
+        else if (this.over)
+            g.setColor(ColorOverA);
+        else
+            g.setColor(ColorSurfA);
 
         if (this.pad){
 
-            g.setColor(Color.blue);
+            g.setClip(null);
 
-            g.drawLine(x1,(y1-1),x2,(y2-1));
+            g.draw(this.lineHi);
+
+            if (this.over)
+                g.setColor(ColorPadA);
+            else
+                g.setColor(ColorPadB);
+
+            g.draw(this.linePad);
 
             if (null != this.pointsString){
-                g.setColor(Color.red);
-                font.drawString(this.pointsString,
-                                (x1 + ((x2 - x1)/2) - this.indent),
-                                (y1 + 20), g);
+
+                g.setStroke(StrokeP);
+
+                int x1 = (int)this.x1;
+                int x2 = (int)this.x2;
+                int y1 = (int)this.y1;
+
+                g.setColor(ColorTechP);
+
+                Luna.Instance.fontP.drawString(this.pointsString,
+                                               (x1 + ((x2 - x1)/2) - this.indent),
+                                               PointsY, g);
             }
+        }
+        else {
+
+            g.draw(this.lineHi);
+
+            g.setClip(null);
         }
     }
     public Surface clone(){
@@ -349,7 +388,7 @@ public final class Surface
         }
         else {
             this.pointsString = Integer.toString(this.points);
-            this.pointsStringBounds = font.stringBounds(this.pointsString);
+            this.pointsStringBounds = Luna.Instance.fontP.stringBounds(this.pointsString);
             this.indent = (this.pointsStringBounds.width/2);
         }
     }
@@ -366,10 +405,75 @@ public final class Surface
         else 
             return this.west().landing(dir--,limit);
     }
-    private final static Color SurfA = Color.gray;
-    private final static Color SurfB = SurfA.darker().darker();
-    private final static Color CollA = new Color(0xaf,0x90,0x90);
-    private final static Color CollB = CollA.darker().darker();
-    private final static Color OverA = new Color(0xaf,0xaf,0xaf);
-    private final static Color OverB = OverA.darker().darker();
+    private final static Color ColorSurfA = new Color(0x70,0x70,0x70,0x80);
+    private final static Color ColorSurfB = new Color(0x50,0x50,0x50,0x80);
+    private final static Color ColorSurfC = new Color(0x40,0x40,0x40);
+
+    private final static Color ColorCollA = new Color(0xd0,0x30,0x30,0x80);
+    private final static Color ColorCollB = new Color(0xa0,0x30,0x30,0x80);
+
+    private final static Color ColorOverA = new Color(0x80,0x80,0x80,0x80);
+    private final static Color ColorOverB = new Color(0x60,0x60,0x60,0x80);
+
+    private final static Color ColorPadA = new Color(0x10,0x10,0xff,0x50);
+    private final static Color ColorPadB = new Color(0x10,0x10,0xd0,0x50);
+
+    private final static Color ColorTechP = new Color(0xe0,0x10,0x10);
+
+    private final static Path2D.Double Basement(Line2D.Double surface){
+
+        Path2D.Double basement = new Path2D.Double();
+        double x1 = (surface.x1-0.4);
+        double y1 = (surface.y1-0.4);
+        double x2 = (surface.x2+0.4);
+        double y2 = (surface.y2-0.4);
+
+
+        basement.moveTo(x1,y1);
+        basement.lineTo(x2,y2);
+        basement.lineTo(x2,Ymax);
+        basement.lineTo(x1,Ymax);
+        basement.lineTo(x1,y1);
+
+        return basement;
+    }
+    private final static Path2D.Double LineLo(Line2D.Double surface){
+
+        Path2D.Double basement = new Path2D.Double();
+        double x1 = (surface.x1-0.1);
+        double y1 = (surface.y1+0.5);
+        double x2 = (surface.x2+0.1);
+        double y2 = (surface.y2+0.5);
+
+        basement.moveTo(x1,y1);
+        basement.lineTo(x2,y2);
+
+        return basement;
+    }
+    private final static Path2D.Double LineHi(Line2D.Double surface){
+
+        Path2D.Double basement = new Path2D.Double();
+        double x1 = (surface.x1-0.1);
+        double y1 = (surface.y1-0.3);
+        double x2 = (surface.x2+0.1);
+        double y2 = (surface.y2-0.3);
+
+        basement.moveTo(x1,y1);
+        basement.lineTo(x2,y2);
+
+        return basement;
+    }
+    private final static Path2D.Double LinePad(Line2D.Double surface){
+
+        Path2D.Double basement = new Path2D.Double();
+        double x1 = (surface.x1+0.1);
+        double y1 = (surface.y1-0.5);
+        double x2 = (surface.x2-0.1);
+        double y2 = (surface.y2-0.5);
+
+        basement.moveTo(x1,y1);
+        basement.lineTo(x2,y2);
+
+        return basement;
+    }
 }

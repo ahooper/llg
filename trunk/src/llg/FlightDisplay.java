@@ -29,15 +29,9 @@ import java.awt.geom.Ellipse2D;
 public final class FlightDisplay
     extends HUD
 {
-    protected final static Font Detail = Font.Futural.clone(0.7f,0.6f);
-    static {
-        Detail.setVerticalAlignment(Font.VERTICAL_HALF);
-    }
 
     public static class Score {
 
-        private final static int marginW = 34;
-        private final static int marginH = 24;
         private final static int padding = 3;
         private final static int padding1 = 2;
         private final static int padding2 = (2*padding);
@@ -52,6 +46,11 @@ public final class FlightDisplay
             "000000",
         };
 
+        protected Font technical;
+
+        private int marginW;
+        private int marginH;
+
         private int value;
         private String valueString;
         private Rectangle dim;
@@ -63,6 +62,12 @@ public final class FlightDisplay
 
 
         public void init(boolean newGame){
+            this.technical = Font.Futural.clone(0.9f,0.8f);
+            this.technical.setVerticalAlignment(Font.VERTICAL_TOP);
+
+            this.marginW = (int)(34.0 * Screen.Current.scale);
+            this.marginH = (int)(24.0 * Screen.Current.scale);
+
             if (newGame)
                 this.value = 0;
 
@@ -75,7 +80,7 @@ public final class FlightDisplay
             if (0 < v){
                 this.valueString = (Value[v]+this.valueString);
             }
-            this.dim = Technical.stringBounds(this.valueString,marginW,marginH);
+            this.dim = this.technical.stringBounds(this.valueString,marginW,marginH);
             this.dim.width += padding2;
             this.dim.height += padding2;
         }
@@ -83,7 +88,7 @@ public final class FlightDisplay
 
             g.setColor(Color.green);
 
-            Technical.drawString(this.valueString,(this.dim.x+padding1),(this.dim.y+padding1),g);
+            this.technical.drawString(this.valueString,(this.dim.x+padding1),(this.dim.y+padding1),g);
 
             g.drawRect((this.dim.x),(this.dim.y),(this.dim.width),(this.dim.height));
         }
@@ -92,11 +97,13 @@ public final class FlightDisplay
 
         private final static float PropMassKg = 8165.0f;
 
-        private final static Rectangle Dim = Markers.stringBounds("d");
-        private final static int DH = ((Dim.height / 2)+3);
-
 
         private final float sw, sh;
+
+        protected Font markers, detail;
+
+        private Rectangle dim;
+        private int dh;
 
         private int top, left, bottom, height, xm, xt;
 
@@ -119,11 +126,18 @@ public final class FlightDisplay
 
         public void init(Game game){
 
+            this.markers = Font.Markers.clone(2f,1f);
+            this.detail = Font.Futural.clone(0.7f,0.6f);
+            this.detail.setVerticalAlignment(Font.VERTICAL_HALF);
+
+            this.dim = this.markers.stringBounds("d");
+            this.dh = (int)(((float)this.dim.height / 2f)+3f);
+
             this.left = (int)(game.width * this.sw);
             this.height = (int)(game.height * this.sh);
             this.top = (int)((game.height - this.height)/2);
             this.bottom = (this.top + this.height);
-            this.xm = (this.left - Dim.width);
+            this.xm = (this.left - this.dim.width);
             this.xt = (this.left + 3);
             this.update();
         }
@@ -131,7 +145,7 @@ public final class FlightDisplay
 
             float fuel = Lander.fuel;
 
-            this.marker = (int)(this.bottom - (this.height * fuel) + DH);
+            this.marker = (int)(this.bottom - (this.height * fuel) + this.dh);
 
             if (0.25 > fuel){
                 if (0.15 > fuel)
@@ -145,7 +159,7 @@ public final class FlightDisplay
             fuel *= PropMassKg;
 
             this.string = String.format("%3.1f",fuel);
-            this.stringBounds = Detail.stringBounds(this.string,this.xt,this.marker);
+            this.stringBounds = this.detail.stringBounds(this.string,this.xt,this.marker);
             this.stringBounds.y -= (this.stringBounds.height / 2);
         }
         public void draw(Graphics2D g){
@@ -156,9 +170,9 @@ public final class FlightDisplay
             g.drawLine(this.left,this.top,this.left,this.bottom);
             g.drawLine(this.left,this.bottom,(this.left+2),this.bottom);
 
-            Markers.drawString("d",this.xm,this.marker,g);
+            this.markers.drawString("d",this.xm,this.marker,g);
             if (null != this.string)
-                Detail.drawString(this.string,this.stringBounds.x,this.stringBounds.y,g);
+                this.detail.drawString(this.string,this.stringBounds.x,this.stringBounds.y,g);
         }
     }
     public static class Vector {
@@ -240,12 +254,15 @@ public final class FlightDisplay
     }
     public static class Altitude {
 
-        private final static Rectangle Dim = Markers.stringBounds("d");
-        private final static int DH = ((Dim.height / 2)+3);
 
         public final static double CEIL = 10000.0;
 
         private final float sw, sh;
+
+        protected Font markers, detail;
+
+        private Rectangle dim;
+        private int dh;
 
         private int top, left, bottom, height, xm, xt;
 
@@ -268,12 +285,19 @@ public final class FlightDisplay
 
         public void init(Game game){
 
+            this.markers = Font.Markers.clone(2f,1f);
+            this.detail = Font.Futural.clone(0.7f,0.6f);
+            this.detail.setVerticalAlignment(Font.VERTICAL_HALF);
+
+            this.dim = this.markers.stringBounds("d");
+            this.dh = (int)(((float)this.dim.height / 2f)+3f);
+
             this.left = (int)(game.width - (game.width * this.sw));
             this.height = (int)(game.height * this.sh);
             this.top = (int)((game.height - this.height)/2);
             this.bottom = (this.top + this.height);
             this.xm = (this.left-4);
-            this.xt = (this.left - Dim.width);
+            this.xt = (this.left - this.dim.width);
             this.update();
         }
         public void update(){
@@ -284,7 +308,7 @@ public final class FlightDisplay
             if (1f < norm)
                 norm = 1f;
 
-            this.marker = (int)(this.bottom - (this.height * norm) + DH);
+            this.marker = (int)(this.bottom - (this.height * norm) + this.dh);
 
             if (0.70 < norm){
                 if (0.90 < norm)
@@ -296,7 +320,7 @@ public final class FlightDisplay
                 this.color = Color.green;
 
             this.string = String.format("%3.1f",raw);
-            this.stringBounds = Detail.stringBounds(this.string,this.xt,this.marker);
+            this.stringBounds = this.detail.stringBounds(this.string,this.xt,this.marker);
             this.stringBounds.x = (this.left - this.stringBounds.width - 4);
             this.stringBounds.y -= (this.stringBounds.height / 2);
         }
@@ -308,9 +332,9 @@ public final class FlightDisplay
             g.drawLine(this.left,this.top,this.left,this.bottom);
             g.drawLine(this.left,this.bottom,(this.left+2),this.bottom);
 
-            Markers.drawString("d",this.xm,this.marker,g);
+            this.markers.drawString("d",this.xm,this.marker,g);
             if (null != this.string)
-                Detail.drawString(this.string,this.stringBounds.x,this.stringBounds.y,g);
+                this.detail.drawString(this.string,this.stringBounds.x,this.stringBounds.y,g);
         }
     }
 

@@ -80,8 +80,8 @@ public final class Game
 
             HUD.Status2(String.format("A"));
         }
-        this.dx(this.left - (Math.abs(px) - (this.innerWidth/2.0)));
-        this.dy(this.top -  (Math.abs(py) - (this.innerHeight/1.9)));
+        this.dx(this.left - ((px) - (this.innerWidth/2.0)));
+        this.dy(this.top -  ((py) - (this.innerHeight/1.9)));
 
         Lander.Current.tick();
 
