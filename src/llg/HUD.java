@@ -31,23 +31,11 @@ public class HUD
         Instance.status2(string);
     }
 
-    protected final static Font Messages0 = Font.Futural.clone(3f,2f);
-    protected final static Font MessagesN = Font.Futural.clone(1.1f,0.9f);
-    static {
-        Messages0.setVerticalAlignment(Font.VERTICAL_BOTTOM);
-        MessagesN.setVerticalAlignment(Font.VERTICAL_TOP);
-    }
-
-    protected final static Font Markers = Font.Markers.clone(2f,1f);
-
-    protected final static Font Technical = Font.Futural.clone(0.9f,0.8f);
-    static {
-        Technical.setVerticalAlignment(Font.VERTICAL_TOP);
-    }
-
-
-
     protected final Panel panel;
+
+    protected Font messages0;
+    protected Font messagesN;
+    protected Font technical;
 
     private volatile String[] messages;
 
@@ -64,6 +52,12 @@ public class HUD
     public void toggle(){
     }
     public void init(boolean newGame){
+        this.messages0 = Font.Futural.clone(3f,2f);
+        this.messages0.setVerticalAlignment(Font.VERTICAL_BOTTOM);
+        this.messagesN = Font.Futural.clone(1.1f,0.9f);
+        this.messagesN.setVerticalAlignment(Font.VERTICAL_TOP);
+        this.technical = Font.Futural.clone(0.9f,0.8f);
+        this.technical.setVerticalAlignment(Font.VERTICAL_TOP);
     }
     public void scored(int points){
     }
@@ -105,9 +99,9 @@ public class HUD
                 String message = messages[cc];
                 Font font;
                 if (0 == cc)
-                    font = Messages0;
+                    font = this.messages0;
                 else
-                    font = MessagesN;
+                    font = this.messagesN;
 
                 Rectangle bounds = font.stringBounds(message);
 
@@ -122,14 +116,14 @@ public class HUD
 
         String status1 = this.status1;
         if (null != status1){
-            Rectangle b = Technical.stringBounds(status1, panel.left, panel.bottom);
-            Technical.drawString( status1, b.x, b.y, g);
+            Rectangle b = this.technical.stringBounds(status1, panel.left, panel.bottom);
+            this.technical.drawString( status1, b.x, b.y, g);
         }
 
         String status2 = this.status2;
         if (null != status2){
-            Rectangle b = Technical.stringBounds(status2, panel.left, panel.bottom);
-            Technical.drawString( status2, b.x, (b.y+b.height), g);
+            Rectangle b = this.technical.stringBounds(status2, panel.left, panel.bottom);
+            this.technical.drawString( status2, b.x, (b.y+b.height), g);
         }
     } 
 }

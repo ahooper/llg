@@ -30,17 +30,9 @@ import java.awt.Window;
 public final class Screen
     extends Object
 {
-    private final static GraphicsDevice Device(GraphicsEnvironment environment, int screen){
-        GraphicsDevice devices[] = environment.getScreenDevices();
-        if (-1 < screen){
-            if (screen < devices.length)
-                return devices[screen];
-            else
-                return devices[devices.length-1];
-        }
-        else
-            return devices[0];
-    }
+    volatile static Screen Current;
+
+    private final static double Dimension = 1800.0;
 
 
     public final GraphicsEnvironment environment;
@@ -50,6 +42,8 @@ public final class Screen
     public final GraphicsConfiguration configuration;
 
     public final Rectangle display;
+
+    public final double scale;
 
     /**
      * Applet
@@ -65,10 +59,12 @@ public final class Screen
     }
     private Screen(GraphicsEnvironment environment, GraphicsConfiguration gc, GraphicsDevice device, int x, int y, int w, int h){
         super();
+        Current = this;
         this.environment = environment;
         this.device = device;
         this.configuration = gc;
         this.display = new Rectangle(x,y,w,h);
+        this.scale = (((double)Math.max(w,h)) / Dimension);
         this.init();
     }
     /**
@@ -82,10 +78,12 @@ public final class Screen
     }
     private Screen(GraphicsEnvironment environment, GraphicsConfiguration gc, GraphicsDevice device){
         super();
+        Current = this;
         this.environment = environment;
         this.device = device;
         this.configuration = gc;
         this.display = this.configuration.getBounds();
+        this.scale = (((double)Math.max(this.display.width,this.display.height)) / Dimension);
         this.init();
     }
 

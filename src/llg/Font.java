@@ -144,13 +144,16 @@ public class Font
     }
     public Font clone(float height){
         Font clone = this.clone();
-        clone.hersheyHeight = height;
+        float s = (float)(Screen.Current.scale);
+        clone.hersheyWidth = (height*s);
+        clone.hersheyHeight = (height*s);
         return clone;
     }
     public Font clone(float width, float height){
         Font clone = this.clone();
-        clone.hersheyWidth = width;
-        clone.hersheyHeight = height;
+        float s = (float)(Screen.Current.scale);
+        clone.hersheyWidth = (width*s);
+        clone.hersheyHeight = (height*s);
         return clone;
     }
     public void setRotation (double theta){
