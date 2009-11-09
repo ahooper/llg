@@ -1,6 +1,8 @@
 #summary Guide to the codebase
 #labels Featured,Documentation
 
+ = Flight =
+
  See [ManualControl Manual Control] for some background on flying llg.
 
  = Development = 
