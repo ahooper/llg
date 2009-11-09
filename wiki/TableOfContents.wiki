@@ -1,5 +1,5 @@
 #labels Documentation
- * [Usage]
+ * [LLGUsersGuide LLG User's Guide]
  * [ManualControl Manual Control]
  * [FlightComputer Flight Computer]
  * [RoadMap Road Map]
