@@ -5,10 +5,5 @@
 
  = Head's Up Display =
 
- On the left hand side are the vertical fuel level indicator, and on top the score box.
+ || On the left hand side are the vertical fuel level indicator, and on top the score box.  In the lower left, the POV camera distance model is indicated by a camera letter. ||  <wiki:gadget url="http://llg.googlecode.com/svn/web/llg-gadget.xml" border="0"/> ||  On the right hand side are the velocity vector indicator on top, and the altitude indicator. ||
 
- On the right hand side are the velocity vector indicator on top, and the altitude indicator.
-
- <wiki:gadget url="http://llg.googlecode.com/svn/web/llg-gadget.xml" border="0"/>
-
- In the lower left, the POV camera distance model is indicated by a camera letter.
