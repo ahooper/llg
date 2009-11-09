@@ -1,0 +1,4 @@
+#summary Lunar Lander User's Guide
+#labels Guide
+
+ The horizontal arrow keys rotate the spacecraft, and the vertical keys direct the FlightComputer to fire an engine burn for a uniform change in the velocity vector.
