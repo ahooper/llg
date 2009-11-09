@@ -2,3 +2,13 @@
 #labels Guide
 
  The [http://en.wikipedia.org/wiki/Apollo_Guidance_Computer flight computer] is responsible for continuous data on the position and orientation of the spacecraft, and for [http://www.nasa.gov/mission_pages/constellation/altair/index.html descent engine] and [http://en.wikipedia.org/wiki/Apollo_PGNCS PGNCS] burns.
+
+ = Head's Up Display =
+
+ On the left hand side are the vertical fuel level indicator, and on top the score box.
+
+ On the right hand side are the velocity vector indicator on top, and the altitude indicator.
+
+ <wiki:gadget url="http://llg.googlecode.com/svn/web/llg-gadget.xml" border="0"/>
+
+ In the lower left, the POV camera distance model is indicated by a camera letter.
