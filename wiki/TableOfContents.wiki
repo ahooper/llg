@@ -1,4 +1,6 @@
 #labels Documentation
  * [Usage]
+ * [ManualControl Manual Control]
+ * [FlightComputer Flight Computer]
  * [RoadMap Road Map]
  * [GettingInvolved Getting Involved]
