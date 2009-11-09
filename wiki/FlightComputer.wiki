@@ -1,4 +1,4 @@
 #summary Lunar Lander User's Guide
 #labels Guide
 
- The flight computer is responsible for continuous data on the position and orientation of the spacecraft, and for engine and acs burns.
+ The [http://en.wikipedia.org/wiki/Apollo_Guidance_Computer flight computer] is responsible for continuous data on the position and orientation of the spacecraft, and for [http://www.nasa.gov/mission_pages/constellation/altair/index.html descent engine] and [http://en.wikipedia.org/wiki/Apollo_PGNCS PGNCS] burns.
