@@ -3,7 +3,7 @@
 
  = Flight =
 
- See [ManualControl Manual Control] for some background on flying llg.
+ See [ManualControl Manual Control] for some background on flying [http://en.wikipedia.org/wiki/Apollo_spacecraft#Descent_Stage LLG].
 
  = Development = 
 
