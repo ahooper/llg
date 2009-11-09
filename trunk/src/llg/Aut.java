@@ -59,10 +59,15 @@ public abstract class Aut
                         return;
                 }
                 catch (Throwable thrown){
-                    thrown.printStackTrace();
+                    if (thrown instanceof InterruptedException)
+                        return;
+                    else if (thrown instanceof ThreadDeath)
+                        throw (Error)thrown;
+                    else
+                        thrown.printStackTrace();
                 }
             }
-            while (true);
+            while (this.running);
         }
     }
 
@@ -74,8 +79,6 @@ public abstract class Aut
         private Animator animator;
 
         private volatile long enter, exit;
-
-        private boolean running = true;
 
 
         Animation(Animator animator){
@@ -93,10 +96,6 @@ public abstract class Aut
         public void exit(){
 
             this.exit = System.currentTimeMillis();
-        }
-        public void halt(){
-
-            this.running = false;
         }
         public void run(){
             Animator animator = this.animator;
@@ -122,9 +121,17 @@ public abstract class Aut
     }
 
 
+    protected boolean running = true;
+
+
     protected Aut(String n){
         super("LLG Aut "+n);
         this.setDaemon(true);
         this.setPriority(MIN_PRIORITY);
+    }
+
+
+    public void halt(){
+        this.running = false;
     }
 }
