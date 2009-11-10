@@ -24,7 +24,9 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 /**
  * <h3>Coordinate spaces</h3>
@@ -66,7 +68,7 @@ public abstract class Panel
 
     private volatile Rectangle2D.Double viewport;
 
-    private volatile double dx, dy, scale;
+    private volatile double dx, dy, cx, cy, scale;
 
     private volatile BackingStore graphics;
 
@@ -81,7 +83,7 @@ public abstract class Panel
     }
 
 
-    public void close(){
+    public final void close(){
         java.awt.Container parent = this.getParent();
         if (parent instanceof Fullscreen)
             ((Fullscreen)parent).close();
@@ -108,7 +110,7 @@ public abstract class Panel
             this.dy = dy;
         }
     }
-    public double ds(){
+    public final double ds(){
         return this.scale;
     }
     public final void ds(double scale){
@@ -117,21 +119,32 @@ public abstract class Panel
             this.scale = scale;
         }
     }
+    public final double cx(){
+        return this.cx;
+    }
+    public final double cy(){
+        return this.cy;
+    }
     /**
      * @return The viewport in world coordinates.
      */
-    public Rectangle2D.Double toWorld(){
+    public final Rectangle2D.Double toWorld(){
 
-        Rectangle2D.Double viewport = this.viewport;
-        if (null == viewport){
-            double x = (-this.dx / this.scale);
-            double y = (-this.dy / this.scale);
-            double w = (this.width / this.scale);
-            double h = (this.height / this.scale);
-            viewport = new Rectangle2D.Double(x,y,w,h);
-            this.viewport = viewport;
+        Camera c = Camera.Current;
+        if (null == c){
+            Rectangle2D.Double viewport = this.viewport;
+            if (null == viewport){
+                double x = (-this.dx / this.scale);
+                double y = (-this.dy / this.scale);
+                double w = (this.width / this.scale);
+                double h = (this.height / this.scale);
+                viewport = new Rectangle2D.Double(x,y,w,h);
+                this.viewport = viewport;
+            }
+            return viewport;
         }
-        return viewport;
+        else
+            return c;
     }
     public void init(Screen screen){
 
@@ -150,6 +163,8 @@ public abstract class Panel
         this.right = (display.width - this.padding);
         this.top = (display.y + this.padding);
         this.bottom = (display.height - this.padding);
+        this.cx = (this.left + (this.innerWidth / 2.0));
+        this.cy = (this.top + (this.innerHeight / 1.9));
 
         if (null == this.graphics)
             this.graphics = screen.getBackingStore(this.getParent(),this);
@@ -217,17 +232,18 @@ public abstract class Panel
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                            RenderAntialiasing);
+
         /*
          * Clear
          */
         g.setColor(this.getBackground());
-        Rectangle bounds = this.bounds();
 
-        g.fillRect(0, 0, bounds.width, bounds.height);
+        g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
         g.setColor(this.getForeground());
+
         /*
-         * Draw world
+         * Draw World
          */
         Graphics2D gm = (Graphics2D)g.create();
         try {
@@ -240,13 +256,32 @@ public abstract class Panel
             gm.dispose();
         }
         /*
-         * Foreground
+         * Draw Overlay
          */
         g.setColor(this.getForeground());
 
         Drawable drawable = this.hud;
         if (null != drawable)
             drawable.draw(g);
+    }
+    public final Graphics2D getBackgroundBuffer(){
+
+        BufferedImage buffer = this.graphics.getBackgroundBuffer1();
+
+        Graphics2D g = (Graphics2D)buffer.getGraphics();
+
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderAntialiasing);
+
+        g.translate(this.dx,this.dy);
+        g.scale(this.scale,this.scale);
+        return g;
+    }
+    public final void blitBackgroundBuffer(Graphics2D g){
+        BufferedImage buffer = this.graphics.getBackgroundBuffer2();
+        int x = (int)-this.dx;
+        int y = (int)-this.dy;
+        g.drawImage(buffer,x,y,this);
     }
     /**
      * Draw world
@@ -257,12 +292,8 @@ public abstract class Panel
 
         return true;
     }
-    public boolean mouseDown(Event evt, int x, int y){
-
-        return false;
-    }
     @Override
-    protected void processComponentEvent(ComponentEvent e) {
+    protected final void processComponentEvent(ComponentEvent e) {
 
         switch(e.getID()){
         case ComponentEvent.COMPONENT_RESIZED:
@@ -285,6 +316,25 @@ public abstract class Panel
         case ComponentEvent.COMPONENT_HIDDEN:
 
             this.stop();
+            break;
+        }
+    }
+    @Override
+    protected void processMouseEvent(MouseEvent e) {
+
+        switch(e.getID()) {
+        case MouseEvent.MOUSE_PRESSED:
+            break;
+        case MouseEvent.MOUSE_RELEASED:
+            break;
+        case MouseEvent.MOUSE_CLICKED:
+
+            this.requestFocus();
+
+            break;
+        case MouseEvent.MOUSE_EXITED:
+            break;
+        case MouseEvent.MOUSE_ENTERED:
             break;
         }
     }

@@ -29,6 +29,34 @@ import java.awt.Stroke;
 public final class World
     implements Drawable
 {
+
+    public interface Distance {
+
+        public final static double Meters = (4.21 / 12.0);
+        public final static double Kilometers = (1000.0 * Meters);
+    }
+    public static class Longitude {
+
+        public final static double Degrees = (Luna.Circumference / 360.0);
+        public final static double Minutes = (60.0 * Degrees);
+        public final static double Seconds = (60.0 * Minutes);
+
+        public final double degrees, minutes, seconds;
+
+        Longitude(double p){
+            super();
+            double degrees = (p / Degrees);
+            this.degrees = Math.floor(degrees);
+            double minutes = ((degrees - this.degrees) * 60.0);
+            this.minutes = Math.floor(minutes);
+            this.seconds = ((minutes - this.minutes) * 60.0);
+        }
+
+        public String toString(){
+            return String.format("%3.0f\u00b0 %3.0f\u2032 %3.2f\u2033",this.degrees,this.minutes,this.seconds);
+        }
+    }
+
     private final static int Grid = 100;
     private final static double GriD = 100.0;
 

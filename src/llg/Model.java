@@ -152,9 +152,6 @@ public class Model
     }
     public void keyDown(Event evt, int key) {
     }
-    public boolean mouseDown(Event evt, int x, int y){
-        return false;
-    }
     public void draw(Graphics2D g){
 
         Graphics2D gm = (Graphics2D)g.create();
