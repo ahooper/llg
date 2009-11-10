@@ -20,8 +20,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.Random;
 
@@ -83,7 +85,7 @@ public final class Surface
 
 
     public final boolean pad;
-    private final Polygon basement;
+    private final Shape basement;
     private final Line2D.Double lineHi, lineLo, linePad;
 
     private volatile int points, indent;
@@ -388,8 +390,8 @@ public final class Surface
 
             basement.addPoint(x1,y1);
             basement.addPoint(x2,y2);
-            basement.addPoint(x2,Ym);
-            basement.addPoint(x1,Ym);
+            basement.addPoint(x2,ym);
+            basement.addPoint(x1,ym);
             basement.addPoint(x1,y1);
 
             return basement;
