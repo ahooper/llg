@@ -157,6 +157,8 @@ public final class Game
 
         Luna.Instance.reset();
 
+        Lander.fuel = 1f;
+
         new FlyingLander(Luna.Instance.landing());
 
         this.messagesClear();
@@ -169,7 +171,8 @@ public final class Game
     }
     public void newFlight(){
 
-        new FlyingLander(Luna.Instance.landing(),true);
+        if (!Lander.Current.isLanded())
+            new FlyingLander(Luna.Instance.landing());
 
         this.hud.init(false);
     }

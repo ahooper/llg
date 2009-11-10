@@ -42,7 +42,8 @@ public final class Ticker
                 long dt = (DT - (last - this.last));
                 this.last = last;
                 if (0 < dt){
-                    this.wait(Math.min(DT,dt));
+                    dt = Math.min(DT,dt);
+                    this.wait(dt);
                 }
             }
             catch (InterruptedException exc){
@@ -62,7 +63,7 @@ public final class Ticker
     Ticker(Panel panel){
         super("LLG Ticker");
         this.setDaemon(true);
-        this.setPriority(MIN_PRIORITY);
+        this.setPriority(MIN_PRIORITY+1);
         if (null != panel)
             this.panel = panel;
         else

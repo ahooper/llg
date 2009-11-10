@@ -20,4 +20,6 @@ import java.awt.Graphics2D;
 public interface Tickable {
 
     public void tick();
+
+    public void crash();
 }

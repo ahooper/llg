@@ -62,8 +62,8 @@ public final class LandedLander
     public void keyDown(Event evt, int key){
 
         if ( System.currentTimeMillis() > (saveTimeWeLandedOrCrashed + 500) )
-
-            this.launch();
+            if (0d < fuel)
+                this.launch();
     }
 
 }

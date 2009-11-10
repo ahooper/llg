@@ -135,6 +135,8 @@ public class Line
         if (this.collision)
             this.collision = false;
     }
+    public void crash(){
+    }
     /**
      * When this line is contained in the craft.
      */

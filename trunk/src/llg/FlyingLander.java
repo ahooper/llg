@@ -36,21 +36,16 @@ public final class FlyingLander
 
 
     FlyingLander(Surface landto){
-        this(1f,(landto.midX-Model.Lander.width2),(landto.y1-Model.Lander.height2-2.0),0f,0.001);
+        super((landto.midX-Model.Lander.width2),(landto.y1-Model.Lander.height2-2.0));
         this.intro = true;
-    }
-    FlyingLander(Surface landto, boolean newFlight){
-        this(1f,(landto.midX-Model.Lander.width2),(landto.y1-Model.Lander.height2-1.0),0f,-RocketAcceleration);
-    }
-    FlyingLander (Lander lander){
-        super(lander);
+        this.motion(0.0,0.001);
         Game.Instance.messagesClear();
         Gravity();
         rotate();
+        tick();
     }
-    private FlyingLander (float ff, double dx, double dy, double tx, double ty){
-        super( ff, dx, dy);
-        this.motion(tx,ty);
+    FlyingLander (Lander lander){
+        super(lander);
         Game.Instance.messagesClear();
         Gravity();
         rotate();
@@ -60,22 +55,6 @@ public final class FlyingLander
 
     public boolean isFlying(){
         return true;
-    }
-    public void keyDown(Event evt, int key){
-        if ( key == ' ' || key == Event.UP || key == Event.DOWN){
-
-            this.saveTimeMainRocketOn = System.currentTimeMillis();
-
-            this.mainRocketOn();
-        }
-        else if ( key == Event.LEFT){
-
-            this.rotateLeft();
-        }
-        else if ( key == Event.RIGHT){
-
-            this.rotateRight();
-        }
     }
     public void tick(){
         /*
@@ -122,5 +101,21 @@ public final class FlyingLander
         if (System.currentTimeMillis() >  saveTimeMainRocketOn + 300 ) 
             this.mainRocketOff();
 
+    }
+    public void keyDown(Event evt, int key){
+        if ( key == ' ' || key == Event.UP || key == Event.DOWN){
+
+            this.saveTimeMainRocketOn = System.currentTimeMillis();
+
+            this.mainRocketOn();
+        }
+        else if ( key == Event.LEFT){
+
+            this.rotateLeft();
+        }
+        else if ( key == Event.RIGHT){
+
+            this.rotateRight();
+        }
     }
 }

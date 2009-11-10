@@ -126,6 +126,8 @@ public class Model
     public void tick(){
         this.move(this.tx,this.ty);
     }
+    public void crash(){
+    }
     public Point2D.Double getLocation(){
         return new Point2D.Double(this.dx,this.dy);
     }

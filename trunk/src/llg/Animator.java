@@ -49,7 +49,8 @@ public final class Animator
                 long dt = (DT - (last - this.last));
                 this.last = last;
                 if (0 < dt){
-                    this.wait(Math.min(DT,dt));
+                    dt = Math.min(DT,dt);
+                    this.wait(dt);
                 }
             }
             catch (InterruptedException exc){
@@ -71,7 +72,7 @@ public final class Animator
     Animator(BackingStore graphics){
         super("LLG Animator");
         this.setDaemon(true);
-        this.setPriority(MIN_PRIORITY+1);
+        this.setPriority(MIN_PRIORITY);
         if (null != graphics){
             this.graphics = graphics;
             this.aut = new Aut.Animation(this);

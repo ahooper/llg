@@ -62,7 +62,7 @@ public abstract class Lander
 
     protected static volatile boolean mainRocketOperating;
 
-    protected static volatile float fuel;
+    protected static volatile float fuel = 1.0f;
 
     protected static volatile long saveTimeWeLandedOrCrashed;
 
@@ -79,12 +79,10 @@ public abstract class Lander
 
         this.mainRocketOff();
     }
-    protected Lander (float fuelIn, double px, double py){
+    protected Lander (double px, double py){
         super(Model.Lander);
 
         Current = this;
-
-        fuel = fuelIn;
 
         attitude = 0;
 
@@ -126,7 +124,7 @@ public abstract class Lander
     }
     protected void mainRocketOn(){
 
-        if ( fuel > 0 ){
+        if (0.0 < fuel){
 
             mainRocketOperating = true;
 
