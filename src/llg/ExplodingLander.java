@@ -29,16 +29,13 @@ import java.awt.Graphics2D;
 public class ExplodingLander 
     extends Lander
 {
-    private final Tickable collision;
-
     private java.util.Random generator = new java.util.Random();
+
 
     ExplodingLander (Lander lander, Tickable collision){
         super(lander);
-        if (null != collision)
-            this.collision = collision;
-        else
-            throw new IllegalArgumentException();
+
+        collision.crash();
 
         mainRocketOperating = false;
         saveTimeWeLandedOrCrashed = System.currentTimeMillis();
@@ -72,24 +69,17 @@ public class ExplodingLander
         for (int cc = 0, count = this.lines.length; cc < count; cc++ ){
             Line line = this.lines[cc];
 
-            line.rotate(generator.nextFloat());
-
-            line.deltaX += gravityAcceleration;//(drama)
+            line.deltaX += gravityAcceleration;
 
             line.deltaY += gravityAcceleration;
 
             line.tick();
         }
-
-        if (null != this.collision)
-            this.collision.tick();
     }
     public void keyDown(Event evt, int key){
-        if ( System.currentTimeMillis() > (saveTimeWeLandedOrCrashed + 3000) ){
-            if (0f < fuel)
+        if ( System.currentTimeMillis() > (saveTimeWeLandedOrCrashed + 1000) ){
+            if (0d < fuel)
                 Game.Instance.newFlight();
-            else
-                Game.Instance.newGame();
         }
     }
 }

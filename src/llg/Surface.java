@@ -167,6 +167,9 @@ public final class Surface
 
     public void tick(){
     }
+    public void crash(){
+        this.points(0);
+    }
     public Surface west(){
         Surface west = this.west;
         if (null == west){
@@ -253,11 +256,13 @@ public final class Surface
         return p;
     }
     public float winFuel(float fuel){
-        fuel += (this.points * Lander.RocketFuelWinPointsRatio);
-        if (fuel > 1f)
-            return 1f;
-        else
-            return fuel;
+        int p = this.points;
+        if (0 != p){
+            fuel += (p * Lander.RocketFuelWinPointsRatio);
+            if (fuel > 1f)
+                return 1f;
+        }
+        return fuel;
     }
     public void draw(Graphics2D g){
 
