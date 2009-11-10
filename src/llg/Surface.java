@@ -18,10 +18,10 @@ package llg;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.geom.Line2D;
-import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.Random;
 
@@ -83,7 +83,7 @@ public final class Surface
 
 
     public final boolean pad;
-    private final Path2D.Double basement;
+    private final Polygon basement;
     private final Line2D.Double lineHi, lineLo, linePad;
 
     private volatile int points, indent;
@@ -361,25 +361,38 @@ public final class Surface
 
     private final static Color ColorTechP = new Color(0xa0,0x10,0x10);
 
-    private final static Path2D.Double Basement(Line2D.Double surface){
+    private final static Shape Basement(Line2D.Double surface){
         try {
             Path2D.Double basement = new Path2D.Double();
+
             double x1 = (surface.x1-0.4);
             double y1 = (surface.y1-0.4);
             double x2 = (surface.x2+0.4);
             double y2 = (surface.y2-0.4);
-
-
+ 
             basement.moveTo(x1,y1);
             basement.lineTo(x2,y2);
             basement.lineTo(x2,Ymax);
             basement.lineTo(x1,Ymax);
             basement.lineTo(x1,y1);
-
+ 
             return basement;
         }
         catch (Throwable t){
-            return null;
+            Polygon basement = new Polygon();
+            int x1 = (int)(surface.x1-0.4);
+            int y1 = (int)(surface.y1-0.4);
+            int x2 = (int)(surface.x2+0.4);
+            int y2 = (int)(surface.y2-0.4);
+            int ym = (int)Ymax;
+
+            basement.addPoint(x1,y1);
+            basement.addPoint(x2,y2);
+            basement.addPoint(x2,Ym);
+            basement.addPoint(x1,Ym);
+            basement.addPoint(x1,y1);
+
+            return basement;
         }
     }
     private final static Line2D.Double LineLo(Line2D.Double surface){
