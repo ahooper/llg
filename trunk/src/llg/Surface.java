@@ -84,7 +84,7 @@ public final class Surface
 
     public final boolean pad;
     private final Path2D.Double basement;
-    private final Path2D.Double lineHi, lineLo, linePad;
+    private final Line2D.Double lineHi, lineLo, linePad;
 
     private volatile int points, indent;
 
@@ -262,9 +262,10 @@ public final class Surface
     public void draw(Graphics2D g){
 
         g.setColor(ColorSurfC);
-        g.setClip(this.basement);
-        g.fill(this.basement);
-
+        if (null != this.basement){
+            g.setClip(this.basement);
+            g.fill(this.basement);
+        }
         g.setStroke(StrokeS);
 
         if (this.over)
@@ -356,59 +357,51 @@ public final class Surface
     private final static Color ColorTechP = new Color(0xa0,0x10,0x10);
 
     private final static Path2D.Double Basement(Line2D.Double surface){
+        try {
+            Path2D.Double basement = new Path2D.Double();
+            double x1 = (surface.x1-0.4);
+            double y1 = (surface.y1-0.4);
+            double x2 = (surface.x2+0.4);
+            double y2 = (surface.y2-0.4);
 
-        Path2D.Double basement = new Path2D.Double();
-        double x1 = (surface.x1-0.4);
-        double y1 = (surface.y1-0.4);
-        double x2 = (surface.x2+0.4);
-        double y2 = (surface.y2-0.4);
 
+            basement.moveTo(x1,y1);
+            basement.lineTo(x2,y2);
+            basement.lineTo(x2,Ymax);
+            basement.lineTo(x1,Ymax);
+            basement.lineTo(x1,y1);
 
-        basement.moveTo(x1,y1);
-        basement.lineTo(x2,y2);
-        basement.lineTo(x2,Ymax);
-        basement.lineTo(x1,Ymax);
-        basement.lineTo(x1,y1);
-
-        return basement;
+            return basement;
+        }
+        catch (Throwable t){
+            return null;
+        }
     }
-    private final static Path2D.Double LineLo(Line2D.Double surface){
+    private final static Line2D.Double LineLo(Line2D.Double surface){
 
-        Path2D.Double basement = new Path2D.Double();
         double x1 = (surface.x1-0.1);
         double y1 = (surface.y1+0.5);
         double x2 = (surface.x2+0.1);
         double y2 = (surface.y2+0.5);
 
-        basement.moveTo(x1,y1);
-        basement.lineTo(x2,y2);
-
-        return basement;
+        return new Line2D.Double(x1,y1,x2,y2);
     }
-    private final static Path2D.Double LineHi(Line2D.Double surface){
+    private final static Line2D.Double LineHi(Line2D.Double surface){
 
-        Path2D.Double basement = new Path2D.Double();
         double x1 = (surface.x1-0.1);
         double y1 = (surface.y1-0.3);
         double x2 = (surface.x2+0.1);
         double y2 = (surface.y2-0.3);
 
-        basement.moveTo(x1,y1);
-        basement.lineTo(x2,y2);
-
-        return basement;
+        return new Line2D.Double(x1,y1,x2,y2);
     }
-    private final static Path2D.Double LinePad(Line2D.Double surface){
+    private final static Line2D.Double LinePad(Line2D.Double surface){
 
-        Path2D.Double basement = new Path2D.Double();
         double x1 = (surface.x1+0.1);
         double y1 = (surface.y1-0.5);
         double x2 = (surface.x2-0.1);
         double y2 = (surface.y2-0.5);
 
-        basement.moveTo(x1,y1);
-        basement.lineTo(x2,y2);
-
-        return basement;
+        return new Line2D.Double(x1,y1,x2,y2);
     }
 }
