@@ -44,7 +44,11 @@ public final class Game
 
     public Game(Screen screen){
         super(screen);
+
+        this.ds(2.0);
+
         Instance = this;
+        
         this.hud = new FlightDisplay(this);
     }
 
@@ -63,27 +67,19 @@ public final class Game
     }
     public void tick(){
 
-        Lander lander = Lander.Current;
-        double alt = lander.altitude();
-        double px = lander.x;
-        double py = lander.y;
-
-        if (200 < alt){
-
-            this.ds(1.0);
-
-            HUD.Status2(String.format("B"));
-        }
-        else {
-
-            this.ds(2.0);
-
-            HUD.Status2(String.format("A"));
-        }
-        this.dx(this.left - ((px) - (this.innerWidth/2.0)));
-        this.dy(this.top -  ((py) - (this.innerHeight/1.9)));
-
         Lander.Current.tick();
+
+        Camera t = Camera.Current;
+        Camera c = Camera.View(this,Lander.Current);
+
+        if (t != c){
+            this.ds(c.scale);
+            this.dx(c.dx);
+            this.dy(c.dy);
+            HUD.Status(c.toString());
+        }
+        else
+            this.dx(c.dx);
 
         this.hud.update();
     }
@@ -159,8 +155,6 @@ public final class Game
     }
     public void newGame(){
 
-        this.ds(2);
-
         Luna.Instance.reset();
 
         new FlyingLander(Luna.Instance.landing());
@@ -174,8 +168,6 @@ public final class Game
         this.hud.init(true);
     }
     public void newFlight(){
-
-        this.ds(2);
 
         new FlyingLander(Luna.Instance.landing(),true);
 
@@ -193,9 +185,7 @@ public final class Game
     }
     public void landerLanded(){
 
-        if (0f < Lander.fuel)
-            this.message("Success!");
-        else 
+        if (0f >= Lander.fuel)
             this.message("Game over!");
     }
 }

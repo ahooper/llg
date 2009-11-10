@@ -39,27 +39,7 @@ import java.util.Random;
 public final class Surface 
     extends Line
 {
-    public final static Surface[] Add(Surface[] list, Surface item){
-        if (null != item){
-            if (null == list)
-                return new Surface[]{item};
-            else {
-                int len = list.length;
-                Surface[] copier = new Surface[len+1];
-                System.arraycopy(list,0,copier,0,len);
-                copier[len] = item;
-                list = copier;
-            }
-        }
-        return list;
-    }
-    public final static Surface[] Copy(Surface[] list){
-        Surface[] clone = list.clone();
-        for (int cc = 0, count = clone.length; cc < count; cc++){
-            clone[cc] = clone[cc].clone();
-        }
-        return clone;
-    }
+
     private final static Stroke StrokeS = new BasicStroke(3.9f,1,1);
     private final static Stroke StrokeP = new BasicStroke(0.5f,1,1);
 
@@ -73,7 +53,7 @@ public final class Surface
     public final static double Ymax = 16;
     public final static double Yavg = ((Ymin + Ymax) / 2.0);
 
-    private final static int PointsY = (int)(Ymax + 6);
+    final static int PointsY = (int)(Ymax+3);
 
     private final static int PP = 8;
     private final static int PP2 = (PP*2);
@@ -186,12 +166,6 @@ public final class Surface
 
 
     public void tick(){
-
-        if (this.collision)
-            this.collision = false;
-    }
-    public boolean isNotNew(){
-        return (null != this.east && null != this.west);
     }
     public Surface west(){
         Surface west = this.west;
@@ -259,30 +233,6 @@ public final class Surface
                 return e;
         }
     }
-    public Surface[] normals(Point2D.Double c){
-        Surface[] list = null;
-        Surface w = this.west();
-        java.lang.Double wd = Vector.Distance(w,c);
-        if (null != wd){
-            w.distance = wd;
-            //...
-            list = Surface.Add(list,w);
-        }
-        Surface t = this;
-        java.lang.Double td = Vector.Distance(t,c);
-        if (null != td){
-            t.distance = td;
-            list = Surface.Add(list,t);
-        }
-        Surface e = this.east();
-        java.lang.Double ed = Vector.Distance(e,c);
-        if (null != ed){
-            e.distance = ed;
-            list = Surface.Add(list,w);
-            //...
-        }
-        return list;
-    }
     public void destroy(){
 
         Surface east = this.east;
@@ -317,18 +267,14 @@ public final class Surface
 
         g.setStroke(StrokeS);
 
-        if (this.collision)
-            g.setColor(ColorCollB);
-        else if (this.over)
+        if (this.over)
             g.setColor(ColorOverB);
         else
             g.setColor(ColorSurfB);
 
         g.draw(this.lineLo);
 
-        if (this.collision)
-            g.setColor(ColorCollA);
-        else if (this.over)
+        if (this.over)
             g.setColor(ColorOverA);
         else
             g.setColor(ColorSurfA);
@@ -346,7 +292,7 @@ public final class Surface
 
             g.draw(this.linePad);
 
-            if (null != this.pointsString){
+            if (null != this.pointsString && Camera.Current.is('A')){
 
                 g.setStroke(StrokeP);
 
@@ -357,8 +303,7 @@ public final class Surface
                 g.setColor(ColorTechP);
 
                 Luna.Instance.fontP.drawString(this.pointsString,
-                                               (x1 + ((x2 - x1)/2) - this.indent),
-                                               PointsY, g);
+                                               ((int)this.midX - this.indent), PointsY, g);
             }
         }
         else {
@@ -367,14 +312,6 @@ public final class Surface
 
             g.setClip(null);
         }
-    }
-    public Surface clone(){
-        return (Surface)super.clone();
-    }
-    public Surface clone(double d){
-        Surface s = (Surface)super.clone();
-        s.distance = d;
-        return s;
     }
     private void points(){
         this.points(Rpoints());
@@ -405,12 +342,10 @@ public final class Surface
         else 
             return this.west().landing(dir--,limit);
     }
+
     private final static Color ColorSurfA = new Color(0x70,0x70,0x70,0x80);
     private final static Color ColorSurfB = new Color(0x50,0x50,0x50,0x80);
     private final static Color ColorSurfC = new Color(0x40,0x40,0x40);
-
-    private final static Color ColorCollA = new Color(0xd0,0x30,0x30,0x80);
-    private final static Color ColorCollB = new Color(0xa0,0x30,0x30,0x80);
 
     private final static Color ColorOverA = new Color(0x80,0x80,0x80,0x80);
     private final static Color ColorOverB = new Color(0x60,0x60,0x60,0x80);
@@ -418,7 +353,7 @@ public final class Surface
     private final static Color ColorPadA = new Color(0x10,0x10,0xff,0x50);
     private final static Color ColorPadB = new Color(0x10,0x10,0xd0,0x50);
 
-    private final static Color ColorTechP = new Color(0xe0,0x10,0x10);
+    private final static Color ColorTechP = new Color(0xa0,0x10,0x10);
 
     private final static Path2D.Double Basement(Line2D.Double surface){
 

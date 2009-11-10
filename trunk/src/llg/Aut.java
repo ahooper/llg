@@ -59,10 +59,15 @@ public abstract class Aut
                         return;
                 }
                 catch (Throwable thrown){
-                    if (thrown instanceof InterruptedException)
+                    /*
+                        if (thrown instanceof InterruptedException)
+                            return;
+                        else
+                     */
+                    if (thrown instanceof ThreadDeath)
                         return;
-                    else if (thrown instanceof ThreadDeath)
-                        throw (Error)thrown;
+                    else if (thrown instanceof SecurityException)
+                        return;
                     else
                         thrown.printStackTrace();
                 }

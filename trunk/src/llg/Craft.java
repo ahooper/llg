@@ -21,6 +21,7 @@ package llg;
  */
 public class Craft
     extends Model
+    implements World.Distance
 {
     protected final static double Deg15 = 0.2617993877991;
 
@@ -30,6 +31,8 @@ public class Craft
     protected boolean intro;
 
     protected volatile int attitude;
+
+    private volatile double attitudeRadians;
 
     private volatile double attitudeX;
     private volatile double attitudeY;
@@ -58,12 +61,35 @@ public class Craft
     public boolean isCrashed(){
         return false;
     }
-    public final double altitude(){
+    public final double attitudeRadians(){
+
+        return this.attitudeRadians;
+    }
+    public final double altitudeWorld(){
         double dy = this.dy;
         if (dy < Surface.Yavg)
             return Vector.Dim(dy,Surface.Yavg);
         else
             return -Vector.Dim(dy,Surface.Yavg);
+    }
+    public final double altitudeMeters(){
+
+        return (this.altitudeWorld() * Meters);
+    }
+    public final double latitudeMeters(){
+        return 0.0;
+    }
+    public final double latitudeRadians(){
+        return 0.0;
+    }
+    public final double longitudeWorld(){
+        return -this.dx;
+    }
+    public final double longitudeMeters(){
+        return ((-this.dx) * Meters);
+    }
+    public final World.Longitude longitude(){
+        return (new World.Longitude(-this.dx));
     }
     protected void rotateLeft(){
         this.attitude += 1;
@@ -84,10 +110,10 @@ public class Craft
     }
     protected void rotate(){
 
-        double radian = (this.attitude * Deg15);
-        this.rotate(-radian);
-        double cos = Math.cos(radian);
-        double sin = Math.sin(radian);
+        this.attitudeRadians = (this.attitude * Deg15);
+        this.rotate(-this.attitudeRadians);
+        double cos = Math.cos(this.attitudeRadians);
+        double sin = Math.sin(this.attitudeRadians);
         double sum = Math.abs(sin) + Math.abs(cos);
         this.attitudeY =  cos / sum;
         this.attitudeX =  sin / sum;

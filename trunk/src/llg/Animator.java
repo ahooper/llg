@@ -130,7 +130,6 @@ public final class Animator
         }
         finally {
             aut.halt();
-            graphics.flush();
         }
     }
 }

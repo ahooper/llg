@@ -32,10 +32,6 @@ public final class FlightDisplay
 
     public static class Score {
 
-        private final static int padding = 3;
-        private final static int padding1 = 2;
-        private final static int padding2 = (2*padding);
-
         private final static String[] Value = {
             "",
             "0",
@@ -46,11 +42,9 @@ public final class FlightDisplay
             "000000",
         };
 
-        protected Font technical;
-
+        private Font technical;
         private int marginW;
         private int marginH;
-
         private int value;
         private String valueString;
         private Rectangle dim;
@@ -62,7 +56,7 @@ public final class FlightDisplay
 
 
         public void init(boolean newGame){
-            this.technical = Font.Futural.clone(0.9f,0.8f);
+            this.technical = Font.Futural.clone(1.9f,2.2f);
             this.technical.setVerticalAlignment(Font.VERTICAL_TOP);
 
             this.marginW = (int)(34.0 * Screen.Current.scale);
@@ -81,16 +75,12 @@ public final class FlightDisplay
                 this.valueString = (Value[v]+this.valueString);
             }
             this.dim = this.technical.stringBounds(this.valueString,marginW,marginH);
-            this.dim.width += padding2;
-            this.dim.height += padding2;
         }
         public void draw(Graphics2D g){
 
             g.setColor(Color.green);
 
-            this.technical.drawString(this.valueString,(this.dim.x+padding1),(this.dim.y+padding1),g);
-
-            g.drawRect((this.dim.x),(this.dim.y),(this.dim.width),(this.dim.height));
+            this.technical.drawString(this.valueString,this.dim.x,this.dim.y,g);
         }
     }
     public static class Fuel {
@@ -177,7 +167,7 @@ public final class FlightDisplay
     }
     public static class Vector {
 
-        private final static int margin = 14;
+        final static int margin = 14;
 
         private final float sw;
 
@@ -214,14 +204,13 @@ public final class FlightDisplay
             this.update();
         }
         public void update(){
-            boolean limit = false;
+
             double dx = Lander.Current.tx;
             double dy = Lander.Current.ty;
-            double mx = (Math.abs(dx) / Lander.maxSafeLandingSpeed);
-            double my = (Math.abs(dy) / Lander.maxSafeLandingSpeed);
-            double mag = Math.max(my,my);
-            if (0.8 < mag){
-                if (1.0 < mag)
+            double range = (Math.max(Math.abs(dx),Math.abs(dy)) / Lander.maxSafeLandingSpeed);
+
+            if (0.80 < range){
+                if (0.90 < range)
                     this.color = Color.red;
                 else
                     this.color = Color.yellow;
@@ -302,7 +291,7 @@ public final class FlightDisplay
         }
         public void update(){
 
-            double raw = Lander.Current.altitude();
+            double raw = Lander.Current.altitudeMeters();
 
             double norm = (raw / CEIL);
             if (1f < norm)
@@ -319,7 +308,7 @@ public final class FlightDisplay
             else
                 this.color = Color.green;
 
-            this.string = String.format("%3.1f",raw);
+            this.string = String.format("%3.0f",raw);
             this.stringBounds = this.detail.stringBounds(this.string,this.xt,this.marker);
             this.stringBounds.x = (this.left - this.stringBounds.width - 4);
             this.stringBounds.y -= (this.stringBounds.height / 2);
@@ -338,6 +327,99 @@ public final class FlightDisplay
         }
     }
 
+    public static class Attitude {
+
+        private final float sw;
+
+        private int top, left, diam, radius, cx, cy;
+
+        private double rotate;
+
+
+        public Attitude(Vector vector, float sw){
+            super();
+            this.sw = sw;
+        }
+
+
+        public void init(Vector vector, Game game){
+            this.diam = (int)(game.width * sw);
+            this.radius = (this.diam / 2);
+            this.top = vector.margin;
+            this.left = vector.left - this.diam - vector.margin;
+            this.cy = (this.top + this.radius);
+            this.cx = (this.left + this.radius);
+
+            this.update();
+        }
+        public void update(){
+
+            this.rotate = -(Lander.Current.attitudeRadians());
+        }
+        public void draw(Graphics2D ig){
+
+            Graphics2D g = (Graphics2D)ig.create();
+            try {
+                g.setColor(Color.green);
+
+                g.translate(this.cx, this.cy);
+
+                g.rotate(this.rotate);
+
+                int x = -(this.radius);
+                int y = x;
+
+                g.drawOval(x,y,this.diam,this.diam);
+
+                g.setClip(x,0,this.diam,this.radius);
+
+                g.fillOval(x,y,this.diam,this.diam);
+
+            }
+            finally {
+                g.dispose();
+            }
+        }
+    }
+
+    public final static class Longitude {
+
+        private final float sw;
+
+        private int left, center, top, right, width, mark;
+
+
+        public Longitude(float sw){
+            super();
+            this.sw = sw;
+        }
+        public void init(Game game){
+            this.width = (int)(game.width * this.sw);
+            this.left = (game.width - this.width)/2;
+            this.top = (int)(Surface.Ymax * game.ds());
+            this.right = (this.left + this.width);
+            this.center = (this.left + (this.width / 2));
+        }
+        public void update(){
+
+            double lon = Lander.Current.longitude().degrees/360.0;
+
+            this.mark = (this.center + (int)(lon * (double)this.width));
+        }
+        public void draw(Graphics2D g){
+
+            g.setColor(Color.green);
+
+            g.drawLine(this.left,this.top,this.right,this.top);
+
+            g.drawLine(this.center,(this.top-2),this.center,(this.top+2));
+
+            g.setColor(Color.red);
+
+            g.drawLine(this.mark,(this.top-2),this.mark,(this.top+2));
+        }
+    }
+
 
     private Fuel fuel;
 
@@ -347,6 +429,10 @@ public final class FlightDisplay
 
     private Altitude altitude;
 
+    private Attitude attitude;
+
+    private Longitude longitude;
+
   
     public FlightDisplay(Game g){
         super(g);
@@ -354,6 +440,8 @@ public final class FlightDisplay
         this.vector = new Vector(0.05f);
         this.score = new Score();
         this.altitude = new Altitude(0.02f,0.8f);
+        this.attitude = new Attitude(this.vector,0.05f);
+//         this.longitude = new Longitude(0.8f);
     }
 
 
@@ -364,6 +452,8 @@ public final class FlightDisplay
         this.vector.init(game);
         this.score.init(newGame);
         this.altitude.init(game);
+        this.attitude.init(this.vector,game);
+//         this.longitude.init(game);
     }
     public void scored(int points){
         this.score.update(points);
@@ -372,6 +462,8 @@ public final class FlightDisplay
         this.fuel.update();
         this.vector.update();
         this.altitude.update();
+        this.attitude.update();
+//         this.longitude.update();
     }
     public void draw(Graphics2D g)   
     {
@@ -380,5 +472,7 @@ public final class FlightDisplay
         this.vector.draw(g);
         this.score.draw(g);
         this.altitude.draw(g);
+        this.attitude.draw(g);
+//         this.longitude.draw(g);
     }
 }

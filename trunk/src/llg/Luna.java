@@ -17,28 +17,36 @@ package llg;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 /**
- * Oh thee, luna.  How do we dream of walking all over you, like
- * toddlers on the beach.
+ * In two dimensions, the lander can travel over the range of zero
+ * degrees latitude, only.  The equator of the Moon.
  * 
  * @author jdp
  */
 public final class Luna 
     extends Object
-    implements Drawable
+    implements Drawable,
+               World.Distance
 {
     public final static Luna Instance = new Luna();
+
     static void SInit(){
     }
     private final static Color ColorB = new Color(0x20,0x20,0x20);
 
+    public final static double Radius = (1738.14 * Kilometers);
+
+    public final static double Circumference = (2 * Math.PI * Radius);
+
 
     private volatile Surface list;
 
-    final Font fontP = Font.Futural.clone(0.6f,0.4f);
+    volatile Font fontP;
 
 
     private Luna(){
@@ -46,13 +54,9 @@ public final class Luna
     }
 
 
-    public void destroy(){
-        if (null != this.list){
-            this.list = null;
-            this.list.destroy();
-        }
-    }
     public void reset(){
+        this.fontP = Font.Futural.clone(1.8f,1.0f);
+        this.fontP.setVerticalAlignment(Font.VERTICAL_TOP);
         if (null == this.list)
             this.list = new Surface();
         else {
@@ -60,23 +64,33 @@ public final class Luna
             this.list = new Surface();
         }
     }
+    public void destroy(){
+        if (null != this.list){
+            this.list = null;
+            this.list.destroy();
+        }
+    }
     public void draw(Graphics2D ig){
-        
+
         Rectangle2D.Double viewport = Panel.Instance.toWorld();
 
-        Surface center = this.list;
         Graphics2D g = (Graphics2D)ig.create();
-        g.setColor(ColorB);
-        g.fillRect((int)viewport.x,(int)Surface.Ymax,(int)viewport.width,(int)viewport.height);
-
         try {
+            Surface center = this.list;
+            g.setColor(ColorB);
+            g.fillRect((int)viewport.x,(int)Surface.Ymax,(int)viewport.width,(int)viewport.height);
+
+            double vw = viewport.x;
+            double ve = vw+viewport.width;
+
             Surface east = center;
-            while (viewport.contains(east.x1,east.y1)){
+            while (ve > east.x1){
                 east.draw(g);
                 east = east.east();
             }
+
             Surface west = center.west();
-            while (viewport.contains(west.x2,west.y2)){
+            while (vw < west.x2){
                 west.draw(g);
                 west = west.west();
             }
@@ -93,37 +107,5 @@ public final class Luna
         Surface over = this.list.over(fp);
         this.list = over;
         return over;
-    }
-    public Surface collides(Craft actor){
-        double ax = actor.dx;
-        double aw = actor.width;
-        double ay = actor.dy;
-        double ah = actor.height;
-
-        Point2D.Double c = new Point2D.Double((Vector.Add(ax,aw)/2.0), (Vector.Add(ay,ah)/2.0));
-        Surface[] normals = this.list.normals(c);
-        if (null != normals){
-            /*
-             * [TODO] This should be looking for proper intersection
-             *        with the model.
-             */
-            double radius = Vector.Magnitude((ax),(ay),Vector.Add(ax,aw),Vector.Add(ay,ah));
-
-            Surface nearest = null;
-            for (Surface normal: normals){
-
-                if (normal.distance < radius){
-
-                    if (null == nearest || (normal.distance < nearest.distance))
-                        nearest = normal;
-                }
-            }
-            if (null != nearest){
-                // 
-                //
-                return nearest;
-            }
-        }
-        return null;
     }
 }
