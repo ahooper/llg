@@ -35,7 +35,7 @@ public final class Version {
     /**
      * Build sequence number.
      */
-    public final static int Build = 1;
+    public final static int Build = 2;
     /**
      * HTTP Product Token plus comment build date and time.  
      * As in <code>" Major '.' Minor '.' Build "</code>.
