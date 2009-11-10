@@ -3,5 +3,5 @@
   <ModulePrefs title="llg Gadget" url="http://code.google.com/p/llg" description="Lunar Lander Game version 'G'" author="John Pritchard" author_email="syntelos@gmail.com" width="500" height="500">
   </ModulePrefs>
   <Content preferred_height="400" preferred_width="600" />
-  <Content type="html"><![CDATA[<applet width="100%" height="100%" code="llg.Applet" archive="http://llg.googlecode.com/svn/web/llg-0.0.2.jar"></applet>]]></Content>
+  <Content type="html"><![CDATA[<applet width="100%" height="100%" code="llg.Applet" archive="http://llg.googlecode.com/svn/web/llg-0.0.3.jar"></applet>]]></Content>
 </Module>
