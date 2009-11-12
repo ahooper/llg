@@ -76,7 +76,7 @@ public final class Game
             this.ds(c.scale);
             this.dx(c.dx);
             this.dy(c.dy);
-            HUD.Status(c.toString());
+            HUD.Camera(c.id);
         }
         else
             this.dx(c.dx);

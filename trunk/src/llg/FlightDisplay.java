@@ -433,6 +433,7 @@ public final class FlightDisplay
 
     private Longitude longitude;
 
+    private DSKY dsky;
   
     public FlightDisplay(Game g){
         super(g);
@@ -441,6 +442,7 @@ public final class FlightDisplay
         this.score = new Score();
         this.altitude = new Altitude(0.02f,0.8f);
         this.attitude = new Attitude(this.vector,0.05f);
+        this.dsky = new DSKY(0.4);
 //         this.longitude = new Longitude(0.8f);
     }
 
@@ -454,6 +456,7 @@ public final class FlightDisplay
         this.altitude.init(game);
         this.attitude.init(this.vector,game);
 //         this.longitude.init(game);
+        this.dsky.init(game,this);
     }
     public void scored(int points){
         this.score.update(points);
@@ -464,6 +467,7 @@ public final class FlightDisplay
         this.altitude.update();
         this.attitude.update();
 //         this.longitude.update();
+        this.dsky.update();
     }
     public void draw(Graphics2D g)   
     {
@@ -474,5 +478,6 @@ public final class FlightDisplay
         this.altitude.draw(g);
         this.attitude.draw(g);
 //         this.longitude.draw(g);
+        this.dsky.draw(g);
     }
 }
