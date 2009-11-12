@@ -147,8 +147,15 @@ public final class Game
 
             return true;
 
-        default:
+        case ' ':
+        case Event.UP:
+        case Event.DOWN:
+        case Event.LEFT:
+        case Event.RIGHT:
             Lander.Current.keyDown(evt, key);
+            return true;
+        default:
+            DSKY.Instance.keyDown(key);
             return true;
         }
 

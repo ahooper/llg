@@ -103,19 +103,23 @@ public final class FlyingLander
 
     }
     public void keyDown(Event evt, int key){
-        if ( key == ' ' || key == Event.UP || key == Event.DOWN){
+        switch(key){
+        case ' ':
+        case Event.UP:
+        case Event.DOWN:
 
             this.saveTimeMainRocketOn = System.currentTimeMillis();
 
             this.mainRocketOn();
-        }
-        else if ( key == Event.LEFT){
+            break;
+        case Event.LEFT:
 
             this.rotateLeft();
-        }
-        else if ( key == Event.RIGHT){
+            break;
+        case Event.RIGHT:
 
             this.rotateRight();
+            break;
         }
     }
 }

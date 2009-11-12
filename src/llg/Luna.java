@@ -18,6 +18,7 @@ package llg;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -42,6 +43,8 @@ public final class Luna
     public final static double Radius = (1738.14 * Kilometers);
 
     public final static double Circumference = (2 * Math.PI * Radius);
+
+    public final static double SGP = 4902.7779; //(km^3/s/s)
 
 
     private volatile Surface list;
@@ -97,6 +100,34 @@ public final class Luna
         }
         finally {
             g.dispose();
+        }
+    }
+    public void map(Graphics2D g, DSKY2 viewport){
+
+        double dx = World.TranslateX(Lander.Current,viewport);
+        double dy = viewport.getCenterY();
+
+        g.translate(dx,dy);
+        g.scale(World.Scale,World.Scale);
+
+        Surface center = this.list;
+
+        double w2 = ((viewport.width / World.Scale) / 2.0);
+        double h2 = ((viewport.height / World.Scale) / 2.0);
+
+        double vw = (dx - w2);
+        double ve = (dx + w2);
+
+        Surface east = center;
+        while (ve > east.x1){
+            east.draw(g);
+            east = east.east();
+        }
+
+        Surface west = center.west();
+        while (vw < west.x2){
+            west.draw(g);
+            west = west.west();
         }
     }
     public Surface landing(){

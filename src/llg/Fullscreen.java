@@ -61,9 +61,8 @@ public final class Fullscreen
         /*
          * in the small.. leaving this here..
          */
-        java.awt.Rectangle display = screen.display;
-        this.setLocation(display.x, display.y);
-        this.setSize(display.width, display.height);
+        this.setLocation(screen.x, screen.y);
+        this.setSize(screen.width, screen.height);
         this.setVisible(true);
     }
 

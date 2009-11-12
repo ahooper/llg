@@ -55,7 +55,7 @@ public abstract class Lander
 
     protected final static double RocketAcceleration = 0.010;
     protected final static double RocketFuelConsumption  = 0.001;
-    protected final static double RocketFuelWinPointsRatio  = (1.0 / Surface.PointsMax);
+    protected final static double RocketFuelWinPointsRatio  = (0.9 / Surface.PointsMax);
     protected final static double maxSafeLandingSpeed = 0.25;
 
     protected static volatile double gravityAcceleration = gravityAccelerationDefault;
