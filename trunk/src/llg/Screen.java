@@ -28,7 +28,7 @@ import java.awt.Window;
  * @author jdp
  */
 public final class Screen
-    extends Object
+    extends Rectangle
 {
     volatile static Screen Current;
 
@@ -40,8 +40,6 @@ public final class Screen
     public final GraphicsDevice device;
 
     public final GraphicsConfiguration configuration;
-
-    public final Rectangle display;
 
     public final double scale;
 
@@ -63,9 +61,11 @@ public final class Screen
         this.environment = environment;
         this.device = device;
         this.configuration = gc;
-        this.display = new Rectangle(x,y,w,h);
+        this.x = x;
+        this.y = y;
+        this.width = w;
+        this.height = h;
         this.scale = (((double)Math.max(w,h)) / Dimension);
-        this.init();
     }
     /**
      * Fullscreen, undecorated (no insets).
@@ -82,24 +82,15 @@ public final class Screen
         this.environment = environment;
         this.device = device;
         this.configuration = gc;
-        this.display = this.configuration.getBounds();
-        this.scale = (((double)Math.max(this.display.width,this.display.height)) / Dimension);
-        this.init();
+        Rectangle cb = this.configuration.getBounds();
+        this.x = cb.x;
+        this.y = cb.y;
+        this.width = cb.width;
+        this.height = cb.height;
+        this.scale = (((double)Math.max(this.width,this.height)) / Dimension);
     }
 
 
-    private void init(){
-        /*
-         */
-        int x = (this.display.x);
-        int y = (this.display.y);
-        int w = (this.display.width);
-        int h = (this.display.height);
-        this.display.x      = x;
-        this.display.y      = y;
-        this.display.width  = w;
-        this.display.height = h;
-    }
     public final GraphicsEnvironment getEnvironment(){
         return this.environment;
     }

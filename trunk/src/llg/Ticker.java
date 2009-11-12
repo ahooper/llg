@@ -28,7 +28,7 @@ public final class Ticker
      */
     public static class Sync {
 
-        private final static long DT = 50L;
+        private final static long DT = 53L;
 
         private volatile long last;
 

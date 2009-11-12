@@ -167,11 +167,9 @@ public final class FlightDisplay
     }
     public static class Vector {
 
-        final static int margin = 14;
+        protected final static int Margin = 14;
 
-        private final float sw;
-
-        private int top, left, diam, radius, cx, cy;
+        protected int top, left, diam, radius, cx, cy;
 
         private double prop;
 
@@ -182,18 +180,17 @@ public final class FlightDisplay
         private volatile Color color;
 
 
-        public Vector(float sw){
+        public Vector(Attitude att){
             super();
-            this.sw = sw;
             this.color = Color.green;
         }
 
 
-        public void init(Game game){
-            this.diam = (int)(game.width * sw);
-            this.radius = (this.diam / 2);
-            this.top = margin;
-            this.left = game.width-this.diam-margin;
+        public void init(Attitude att, Game game){
+            this.diam = att.diam;
+            this.radius = att.radius;
+            this.top = att.top;
+            this.left = att.left+this.diam+Margin;
             this.cy = (this.top + this.radius);
             this.cx = (this.left + this.radius);
 
@@ -331,22 +328,22 @@ public final class FlightDisplay
 
         private final float sw;
 
-        private int top, left, diam, radius, cx, cy;
+        int top, left, diam, radius, cx, cy;
 
         private double rotate;
 
 
-        public Attitude(Vector vector, float sw){
+        public Attitude(DSKY dsky, float sw){
             super();
             this.sw = sw;
         }
 
 
-        public void init(Vector vector, Game game){
+        public void init(DSKY dsky, Game game){
             this.diam = (int)(game.width * sw);
             this.radius = (this.diam / 2);
-            this.top = vector.margin;
-            this.left = vector.left - this.diam - vector.margin;
+            this.top = dsky.y + Vector.Margin;
+            this.left = dsky.right + Vector.Margin;
             this.cy = (this.top + this.radius);
             this.cx = (this.left + this.radius);
 
@@ -371,7 +368,7 @@ public final class FlightDisplay
 
                 g.drawOval(x,y,this.diam,this.diam);
 
-                g.setClip(x,0,this.diam,this.radius);
+                g.setClip(x,1,this.diam,this.radius);
 
                 g.fillOval(x,y,this.diam,this.diam);
 
@@ -396,7 +393,7 @@ public final class FlightDisplay
         public void init(Game game){
             this.width = (int)(game.width * this.sw);
             this.left = (game.width - this.width)/2;
-            this.top = (int)(Surface.Ymax * game.ds());
+            this.top = (int)(Surface.Ymax * World.Scale);
             this.right = (this.left + this.width);
             this.center = (this.left + (this.width / 2));
         }
@@ -421,63 +418,70 @@ public final class FlightDisplay
     }
 
 
-    private Fuel fuel;
+    protected final Fuel fuel;
 
-    private Vector vector;
+    protected final Vector vector;
 
-    private Score score;
+    protected final Score score;
 
-    private Altitude altitude;
+    protected final Altitude altitude;
 
-    private Attitude attitude;
+    protected final Attitude attitude;
 
-    private Longitude longitude;
+    //protected final Longitude longitude;
 
-    private DSKY dsky;
+    protected final DSKY dsky;
+
+    protected final DSKY2 dsky2;
+
   
     public FlightDisplay(Game g){
         super(g);
-        this.fuel = new Fuel(0.02f,0.8f);
-        this.vector = new Vector(0.05f);
         this.score = new Score();
+        this.fuel = new Fuel(0.02f,0.8f);
         this.altitude = new Altitude(0.02f,0.8f);
-        this.attitude = new Attitude(this.vector,0.05f);
         this.dsky = new DSKY(0.4);
-//         this.longitude = new Longitude(0.8f);
+        this.dsky2 = new DSKY2(this.dsky);
+        this.attitude = new Attitude(this.dsky,0.05f);
+        this.vector = new Vector(this.attitude);
+        //         this.longitude = new Longitude(0.8f);
     }
 
 
     public void init(boolean newGame){
         super.init(newGame);
         Game game = (Game)this.panel;
-        this.fuel.init(game);
-        this.vector.init(game);
         this.score.init(newGame);
+        this.fuel.init(game);
         this.altitude.init(game);
-        this.attitude.init(this.vector,game);
-//         this.longitude.init(game);
         this.dsky.init(game,this);
+        this.dsky2.init(game,this);
+        this.attitude.init(this.dsky,game);
+        this.vector.init(this.attitude,game);
+        //         this.longitude.init(game);
     }
     public void scored(int points){
         this.score.update(points);
     }
     public void update(){
         this.fuel.update();
-        this.vector.update();
         this.altitude.update();
-        this.attitude.update();
-//         this.longitude.update();
         this.dsky.update();
+        this.dsky2.update();
+        this.attitude.update();
+        this.vector.update();
+        //         this.longitude.update();
     }
     public void draw(Graphics2D g)   
     {
         super.draw(g);
-        this.fuel.draw(g);
-        this.vector.draw(g);
         this.score.draw(g);
+        this.fuel.draw(g);
         this.altitude.draw(g);
-        this.attitude.draw(g);
-//         this.longitude.draw(g);
         this.dsky.draw(g);
+        this.dsky2.draw(g);
+        this.attitude.draw(g);
+        this.vector.draw(g);
+        //         this.longitude.draw(g);
     }
 }
