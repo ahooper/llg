@@ -24,19 +24,19 @@ public class HUD
 {
     protected static HUD Instance;
 
-    public final static void Camera(char id){
-        Instance.camera(id);
+    public final static void Status(String string){
+        Instance.status(string);
     }
 
     protected final Panel panel;
 
     protected Font messages0, messagesN;
-    protected Font cameraFont;
+    protected Font statusFont;
 
     private volatile String[] messages;
 
-    private volatile String cameraString;
-    private volatile Rectangle cameraBounds;
+    private volatile String statusString;
+    private volatile Rectangle statusBounds;
 
   
     public HUD(Panel panel){
@@ -54,8 +54,8 @@ public class HUD
         this.messagesN = Font.Futural.clone(1.1f,0.9f);
         this.messagesN.setVerticalAlignment(Font.VERTICAL_TOP);
 
-        this.cameraFont = Font.Futural.clone(1.9f,2.2f);
-        this.cameraFont.setVerticalAlignment(Font.VERTICAL_TOP);
+        this.statusFont = Font.Futural.clone(1.9f,2.2f);
+        this.statusFont.setVerticalAlignment(Font.VERTICAL_TOP);
     }
     public void scored(int points){
     }
@@ -65,18 +65,9 @@ public class HUD
 
         this.messages = null;
     }
-    public final void camera(char id){
-        this.cameraString = String.valueOf(id);
-        this.cameraBounds = this.cameraFont.stringBounds(this.cameraString, panel.left, panel.bottom);
-    }
-    public final Rectangle getCamera(){
-        Rectangle r = this.cameraBounds;
-        if (null == r){
-            this.cameraString = String.valueOf('A');
-            this.cameraBounds = this.cameraFont.stringBounds(this.cameraString, panel.left, panel.bottom);
-            r = this.cameraBounds;
-        }
-        return r;
+    public final void status(String m){
+        this.statusString = m;
+        this.statusBounds = this.statusFont.stringBounds(m, panel.left, panel.bottom);
     }
     public final void message(String m){
         if (null != m){
@@ -119,10 +110,10 @@ public class HUD
             }
         }
 
-        String camera = this.cameraString;
-        if (null != camera){
-            Rectangle b = this.cameraBounds;
-            this.cameraFont.drawString( camera, b.x, b.y, g);
+        String status = this.statusString;
+        if (null != status){
+            Rectangle b = this.statusBounds;
+            this.statusFont.drawString( status, b.x, (b.y), g);
         }
     } 
 }

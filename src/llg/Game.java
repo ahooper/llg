@@ -76,7 +76,7 @@ public final class Game
             this.ds(c.scale);
             this.dx(c.dx);
             this.dy(c.dy);
-            HUD.Camera(c.id);
+            HUD.Status(c.toString());
         }
         else
             this.dx(c.dx);
@@ -147,15 +147,8 @@ public final class Game
 
             return true;
 
-        case ' ':
-        case Event.UP:
-        case Event.DOWN:
-        case Event.LEFT:
-        case Event.RIGHT:
-            Lander.Current.keyDown(evt, key);
-            return true;
         default:
-            DSKY.Instance.keyDown(key);
+            Lander.Current.keyDown(evt, key);
             return true;
         }
 

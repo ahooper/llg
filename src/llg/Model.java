@@ -27,7 +27,7 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.Charset;
-import java.util.StringTokenizer;
+
 
 /**
  * 
@@ -58,7 +58,6 @@ public class Model
 
     public final static Model Orbiter = new Model("orbiter");
     public final static Model Lander = new Model("lander");
-    public final static Model DSKY = new Model("dsky");
 
 
     protected Line[] lines;
@@ -186,14 +185,22 @@ public class Model
         Line[] lines = null;
         String line;
         double minima, maxima;
-        int lno = 0;
+
         while (null != (line = reader.readLine())){
-            lno += 1;
-            if (0 == line.length() || '#' == line.charAt(0))
-                continue;
-            else {
-                StringTokenizer strtok = new StringTokenizer(line," ,");
-                Line el = new Line(lno,strtok);
+            boolean e, i;
+            {
+                e = line.startsWith("e2");
+                if (e)
+                    i = false;
+                else
+                    i = line.startsWith("i2");
+            }
+            if (e || i){
+                
+                line = line.substring(2);
+                Line el = new Line(line);
+
+                el.visible = e;
 
                 lines = Line.Add(lines,el);
 

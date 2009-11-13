@@ -22,8 +22,6 @@ package llg;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.Rectangle;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.StringTokenizer;
@@ -100,8 +98,6 @@ public class Line
 
     boolean collision;
 
-    Polygon polygon;
-
 
     protected Line(){
         super();
@@ -112,68 +108,20 @@ public class Line
         this.midX = Vector.Mid(x1,x2);
         this.midY = Vector.Mid(y1,y2);
     }
-    public Line(int lno, StringTokenizer strtok){
+    public Line(String string){
         super();
-        String type = strtok.nextToken();
-        boolean e2 = "e2".equals(type), i2, ep2, ip2;
-        if (e2){
-            i2 = false;
-            ep2 = false;
-            ip2 = false;
-        }
-        else {
-            i2 = "i2".equals(type);
-            if (i2){
-                ep2 = false;
-                ip2 = false;
-            }
-            else {
-                ep2 = "ep2".equals(type);
-                if (ep2)
-                    ip2 = false;
-                else
-                    ip2 = "ip2".equals(type);
-            }
-        }
-        if (e2 || i2){
-            if (4 == strtok.countTokens()){
-                this.x1 = java.lang.Double.parseDouble(strtok.nextToken());
-                this.y1 = java.lang.Double.parseDouble(strtok.nextToken());
-                this.x2 = java.lang.Double.parseDouble(strtok.nextToken());
-                this.y2 = java.lang.Double.parseDouble(strtok.nextToken());
-                this.midX = Vector.Mid(x1,x2);
-                this.midY = Vector.Mid(y1,y2);
-                this.visible = e2;
-            }
-            else
-                throw new IllegalArgumentException(String.format("Error at line %d: %s %s",lno,type,strtok.toString()));
-        }
-        else if (ep2 || ip2){
-            int count = strtok.countTokens();
-            if (0 == (count & 1)){
-                int np = (count>>1);
-                int[] xp = new int[np];
-                int[] yp = new int[np];
-                for (int cc = 0; cc < np; cc++){
-                    xp[cc] = (int)java.lang.Double.parseDouble(strtok.nextToken());
-                    yp[cc] = (int)java.lang.Double.parseDouble(strtok.nextToken());
-                }
-                this.x1 = xp[0];
-                this.y1 = yp[0];
-                this.polygon = new Polygon(xp,yp,np);
-                Rectangle bounds = this.polygon.getBounds();
-                this.x2 = this.x1 + bounds.width;
-                this.y2 = this.y1 + bounds.height;
-                this.midX = Vector.Mid(x1,x2);
-                this.midY = Vector.Mid(y1,y2);
-                this.visible = ep2;
-
-            }
-            else
-                throw new IllegalArgumentException(String.format("Error at line %d: %s %s",lno,type,strtok.toString()));
+        StringTokenizer strtok = new StringTokenizer(string," ,}{");
+        if (4 == strtok.countTokens()){
+            this.x1 = java.lang.Double.parseDouble(strtok.nextToken());
+            this.y1 = java.lang.Double.parseDouble(strtok.nextToken());
+            this.x2 = java.lang.Double.parseDouble(strtok.nextToken());
+            this.y2 = java.lang.Double.parseDouble(strtok.nextToken());
+            this.midX = Vector.Mid(x1,x2);
+            this.midY = Vector.Mid(y1,y2);
+            this.visible = true;
         }
         else
-            throw new IllegalArgumentException(String.format("Error at line %d: %s %s",lno,type,strtok.toString()));
+            throw new IllegalArgumentException(string);
     }
 
 

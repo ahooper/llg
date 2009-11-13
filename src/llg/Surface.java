@@ -73,7 +73,7 @@ public final class Surface
     private final static double RY(){
         return R(Ymin,Ymax);
     }
-    public final static int PointsMax = 100;
+    public final static int PointsMax = 125;
     private final static int Rpoints(){
         int a = (int)(R(1,5));
         int b = (int)(R(1,5));
@@ -88,7 +88,7 @@ public final class Surface
     private final Shape basement;
     private final Line2D.Double lineHi, lineLo, linePad;
 
-    private volatile int points, indentW, indentH;
+    private volatile int points, indent;
 
     public volatile double distance;
 
@@ -311,7 +311,7 @@ public final class Surface
                 g.setColor(ColorTechP);
 
                 Luna.Instance.fontP.drawString(this.pointsString,
-                                               ((int)this.midX - this.indentW), PointsY, g);
+                                               ((int)this.midX - this.indent), PointsY, g);
             }
         }
         else {
@@ -319,26 +319,6 @@ public final class Surface
             g.draw(this.lineHi);
 
             g.setClip(null);
-        }
-    }
-    public void map(Graphics2D g){
-
-        if (this.pad){
-            if (this.over)
-                g.setColor(ColorPadA);
-            else
-                g.setColor(ColorPadB);
-
-            int x = (int)this.x1;
-            int diam = (int)(this.x2 - this.x1);
-            g.fillOval(x,0,diam,diam);
-
-            g.setColor(ColorTechP);
-
-            if (null != this.pointsString){
-                Luna.Instance.fontP.drawString(this.pointsString,
-                                               ((int)this.midX - this.indentW), -(this.indentH), g);
-            }
         }
     }
     private void points(){
@@ -349,14 +329,12 @@ public final class Surface
         if (0 == points){
             this.pointsString = null;
             this.pointsStringBounds = null;
-            this.indentW = 0;
-            this.indentH = 0;
+            this.indent = 0;
         }
         else {
             this.pointsString = Integer.toString(this.points);
             this.pointsStringBounds = Luna.Instance.fontP.stringBounds(this.pointsString);
-            this.indentW = (this.pointsStringBounds.width/2);
-            this.indentH = (this.pointsStringBounds.height/2);
+            this.indent = (this.pointsStringBounds.width/2);
         }
     }
     private Surface landing(int dir, int limit){

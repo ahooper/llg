@@ -18,8 +18,8 @@ package llg;
 import java.awt.geom.Rectangle2D;
 
 /**
- * The camera is a viewport function producing the translation and
- * scale for the Panel.
+ * The viewport function is the transform and dimensions for the
+ * Panel.
  * 
  * @author jdp
  */
@@ -33,7 +33,7 @@ public final class Camera
 
         if (null == Current){
 
-            double scale = Math.abs(g.innerHeight / (Screen.Current.height / 3.0));
+            double scale = Math.abs(g.innerHeight / (Screen.Current.display.height / 3.0));
 
             return new Camera(scale,g,(-c.dx),(-c.dy));
         }
@@ -63,12 +63,12 @@ public final class Camera
 
         this.scale = s;
 
-        this.dx = (x * s)+(Game.Instance.getCenterX());
+        this.dx = (x * scale)+(Game.Instance.cx());
 
-        this.dy = g.getCenterX();
+        this.dy = g.cy();
 
-        this.x = (-dx / s);
-        this.y = (-dy / s);
+        this.x = (-dx / this.scale);
+        this.y = (-dy / this.scale);
         this.width = (Panel.Instance.width / s);
         this.height = (Panel.Instance.height / s);
         this.ty = (this.y + this.height);
@@ -96,7 +96,7 @@ public final class Camera
             return camera.view(x,y);
         else if (this.contains(y)){
 
-            this.dx = (x * scale)+(Game.Instance.getCenterX());
+            this.dx = (x * scale)+(Game.Instance.cx());
 
             this.x = ((-this.dx) / this.scale);
 

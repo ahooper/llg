@@ -30,13 +30,6 @@ public final class World
     implements Drawable
 {
 
-    public volatile static double Scale;
-
-    public final static double TranslateX(Craft c, Viewport v){
-        return ((-(c.dx) * World.Scale) + v.getCenterX());
-    }
-
-
     public interface Distance {
 
         public final static double Meters = (4.21 / 12.0);

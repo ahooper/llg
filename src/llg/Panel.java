@@ -48,8 +48,7 @@ import java.awt.image.BufferedImage;
  */
 public abstract class Panel
     extends java.awt.Canvas
-    implements BackingStore.J2D,
-               Viewport
+    implements BackingStore.J2D
 {
 
     static Panel Instance;
@@ -69,7 +68,7 @@ public abstract class Panel
 
     private volatile Rectangle2D.Double viewport;
 
-    private volatile double dx, dy, cx, cy;
+    private volatile double dx, dy, cx, cy, scale;
 
     private volatile BackingStore graphics;
 
@@ -99,18 +98,6 @@ public abstract class Panel
     public final void messagesClear(){
         this.hud.clear();
     }
-    public final double getLeft(){
-        return 0.0;
-    }
-    public final double getTop(){
-        return 0.0;
-    }
-    public final double getCenterX(){
-        return this.cx;
-    }
-    public final double getCenterY(){
-        return this.cy;
-    }
     public final void dx(double dx){
         if (dx != this.dx){
             this.viewport = null;
@@ -123,11 +110,20 @@ public abstract class Panel
             this.dy = dy;
         }
     }
+    public final double ds(){
+        return this.scale;
+    }
     public final void ds(double scale){
-        if (scale != World.Scale){
+        if (scale != this.scale){
             this.viewport = null;
-            World.Scale = scale;
+            this.scale = scale;
         }
+    }
+    public final double cx(){
+        return this.cx;
+    }
+    public final double cy(){
+        return this.cy;
     }
     /**
      * @return The viewport in world coordinates.
@@ -138,10 +134,10 @@ public abstract class Panel
         if (null == c){
             Rectangle2D.Double viewport = this.viewport;
             if (null == viewport){
-                double x = (-this.dx / World.Scale);
-                double y = (-this.dy / World.Scale);
-                double w = (this.width / World.Scale);
-                double h = (this.height / World.Scale);
+                double x = (-this.dx / this.scale);
+                double y = (-this.dy / this.scale);
+                double w = (this.width / this.scale);
+                double h = (this.height / this.scale);
                 viewport = new Rectangle2D.Double(x,y,w,h);
                 this.viewport = viewport;
             }
@@ -152,19 +148,21 @@ public abstract class Panel
     }
     public void init(Screen screen){
 
-        this.width  = (screen.width);
-        this.height = (screen.height);
+        Rectangle display = screen.display;
 
-        this.padding = (int)(0.1f * (float)Math.min(screen.width, screen.height));
+        this.width  = (display.width);
+        this.height = (display.height);
+
+        this.padding = (int)(0.1f * (float)Math.min(display.width, display.height));
 
         int p2 = (this.padding * 2);
         this.innerWidth = this.width - p2;
         this.innerHeight = this.height - p2;
 
-        this.left = (screen.x + this.padding);
-        this.right = (screen.width - this.padding);
-        this.top = (screen.y + this.padding);
-        this.bottom = (screen.height - this.padding);
+        this.left = (display.x + this.padding);
+        this.right = (display.width - this.padding);
+        this.top = (display.y + this.padding);
+        this.bottom = (display.height - this.padding);
         this.cx = (this.left + (this.innerWidth / 2.0));
         this.cy = (this.top + (this.innerHeight / 1.9));
 
@@ -250,7 +248,7 @@ public abstract class Panel
         Graphics2D gm = (Graphics2D)g.create();
         try {
             gm.translate(this.dx,this.dy);
-            gm.scale(World.Scale,World.Scale);
+            gm.scale(this.scale,this.scale);
 
             this.draw(gm);
         }
@@ -276,7 +274,7 @@ public abstract class Panel
                            RenderAntialiasing);
 
         g.translate(this.dx,this.dy);
-        g.scale(World.Scale,World.Scale);
+        g.scale(this.scale,this.scale);
         return g;
     }
     public final void blitBackgroundBuffer(Graphics2D g){
