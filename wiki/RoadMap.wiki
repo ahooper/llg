@@ -1,5 +1,5 @@
 #summary Principal elements of the future course of development
 
- The first goal is for web applet / desktop fullscreen as initially evident in the codebase.
+ The first goal is for web applet / desktop fullscreen
 
- In future, an ogl version would be better than this 2d version.
+ In future, a [http://www.kenai.com/projects/jogl jogl] version would be better
