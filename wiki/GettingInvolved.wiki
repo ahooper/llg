@@ -1,5 +1,4 @@
 #summary Intro to developing Gap Data
-#labels Featured
 
 
  Of course, everyone is welcome to get a copy of LLG!
