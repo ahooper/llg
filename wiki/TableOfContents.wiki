@@ -1,4 +1,5 @@
 #labels Documentation
+ * [Game]
  * [LLGUsersGuide LLG User's Guide]
  * [ManualControl Manual Control]
  * [FlightComputer Flight Computer]
