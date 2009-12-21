@@ -1,0 +1,4 @@
+http://download.java.net/media/jogl/builds/archive/jsr-231-2.0-beta10/gluegen-rt-2.0-webstart.zip
+http://download.java.net/media/jogl/builds/archive/jsr-231-2.0-beta10/jogl-2.0-webstart.zip
+http://download.java.net/media/jogl/builds/archive/jsr-231-2.0-beta10/nativewindow-2.0-webstart.zip
+http://download.java.net/media/jogl/builds/archive/jsr-231-2.0-beta10/newt-2.0-webstart.zip

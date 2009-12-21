@@ -1,0 +1,4 @@
+http://download.java.net/media/gluegen/webstart-2.x/gluegen-rt-2.0-webstart.zip
+http://download.java.net/media/jogl/jsr-231-2.x-webstart/jogl-2.0-webstart.zip
+http://download.java.net/media/jogl/jsr-231-2.x-webstart/nativewindow-2.0-webstart.zip
+http://download.java.net/media/jogl/jsr-231-2.x-webstart/newt-2.0-webstart.zip
