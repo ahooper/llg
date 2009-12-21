@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="llg" default="loader">
+
+  <property name="main" value="llg.Main"/>
+
+  <property name="src" value="src"/>
+  <property name="bin" value="bin"/>
+  <property name="lib" value="lib"/>
+  <property name="dst" value="../web"/>
+
+  <available file="${dst}" type="dir" property="available.dst" />
+
+  <property name="web.codebase" value="http://llg.googlecode.com/svn/web/"/>
+
+  <property name="compiler.source" value="1.5"/>
+  <property name="compiler.target" value="1.5"/>
+  <property name="compiler.debug" value="true"/>
+  <property name="compiler.encoding" value="utf-8"/>
+
+  <property file="build.version"/>
+  <property name="this.version" value="${version.major}.${version.minor}.${version.build}"/>
+
+
+
+  <path id="lib.fv3.jar.path">
+    <fileset dir="${lib}">
+      <include name="**/fv3-*.jar" />
+    </fileset>
+  </path>
+
+  <path id="lib.path">
+    <fileset dir="${lib}">
+      <include name="**/*.jar" />
+    </fileset>
+    <fileset dir="${dst}">
+      <include name="**/*.jar" />
+      <exclude name="**/*-natives-*.jar" />
+    </fileset>
+  </path>
+
+  <path id="jnlp.loader.jar">
+    <fileset dir="loader">
+      <include name="**/jnlp-loader-*.jar"/>
+    </fileset>
+  </path>
+
+
+  <property name="target.jar" value="${dst}/${ant.project.name}-${this.version}.jar"/>
+  <property name="target.jnlp" value="${dst}/${ant.project.name}-${this.version}.jnlp"/>
+
+  <property name="target-loader.jar" value="${dst}/${ant.project.name}-loader-${this.version}.jar"/>
+
+  <target name="loader" depends="jar" description="Package target jar.">
+    <delete file="${target-loader.jar}"/>
+
+    <delete file="main.jnlp"/>
+
+    <copy tofile="main.jnlp" file="${target.jnlp}" />
+
+    <jar jarfile="${target-loader.jar}">
+      <manifest>
+        <attribute name="Main-Class" value="loader.Main"/>
+      </manifest>
+      <fileset file="main.jnlp"/>
+      <zipfileset src="${toString:jnlp.loader.jar}"/>
+    </jar>
+
+    <delete file="main.jnlp"/>
+
+  </target>
+
+  <target name="jar" depends="compile" description="Package bin to target jar, clean bin.">
+    <delete file="${target.jar}"/>
+    <jar jarfile="${target.jar}" basedir="${bin}" >
+      <zipfileset src="${toString:lib.fv3.jar.path}" excludes="META-INF/**"/>
+    </jar>
+    <delete dir="${bin}"/>
+    <copy tofile="${target.jnlp}" file="ver/pkg/llg.jnlp" filtering="true" overwrite="true">
+      <filterset>
+        <filter token="ProjectName"         value="${ant.project.name}"/>
+        <filter token="ProjectVersion"      value="${this.version}"/>
+        <filter token="ProjectMainClass"    value="${main}"/>
+        <filter token="ProjectCodebase"    value="${jnlp.codebase}"/>
+      </filterset>
+    </copy>
+  </target>
+
+  <target name="compile" description="Compile src to bin">
+    <mkdir dir="${bin}"/>
+    <copy todir="${bin}">
+      <fileset dir="${src}" includes="**/*.properties"/>
+      <fileset dir="${src}" includes="**/*.txt"/>
+      <fileset dir="${src}" includes="**/*.xml"/>
+    </copy>
+    <javac srcdir="${src}" destdir="${bin}" debug="${compiler.debug}" encoding="${compiler.encoding}"
+           classpathref="lib.path" source="${compiler.source}" target="${compiler.target}">
+    </javac>
+  </target>
+
+  <target name="clean" description="Delete products">
+    <delete dir="${bin}"/>
+  </target>
+
+  <target name="cleanb" depends="clean" description="Clean build">
+    <antcall target="loader"/>
+  </target>
+
+</project>

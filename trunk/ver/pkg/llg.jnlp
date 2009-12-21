@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp codebase="@ProjectCodebase@" href="@ProjectName@-@ProjectVersion@.jnlp">
+  <information>
+    <title>@ProjectName@</title>
+    <vendor>fv3</vendor>
+    <homepage href="http://code.google.com/p/fv3/"/>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.5+"/>
+    <property name="fv3tk.Animator.SwapInterval" value="default"/>
+    <property name="fv3tk.Animator.Sync.DT" value="40"/>
+    <property name="fv3tk.Animator.GLTrace" value="false"/>
+    <property name="sun.java2d.noddraw" value="true"/>
+    <jar href="@ProjectName@-@ProjectVersion@.jar" main="true"/>
+    <extension name="newt-jogl" href="newt-jogl.jnlp" />
+  </resources>
+  <application-desc main-class="@ProjectMainClass@"/>
+</jnlp>
