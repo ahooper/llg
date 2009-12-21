@@ -24,6 +24,12 @@
     </fileset>
   </path>
 
+  <path id="lib.pack.lorv">
+    <fileset dir="${lib}">
+      <include name="**/lorv-*.jar" />
+    </fileset>
+  </path>
+
   <target name="compile" depends="version">
 
     <compile src="${src}" ver="${ver.src}" bin="${bin}" classpath.id="lib.path"/>
@@ -47,7 +53,11 @@
 
     <archive.resources src="${src}" bin="${bin}"/>
 
-    <archive target="${target.jar}" bin="${bin}" manifest="${src}/Manifest.mf" />
+    <archive target="${target.jar}" bin="${bin}" manifest="${src}/Manifest.mf">
+      <pack>
+        <zipfileset src="${toString:lib.pack.lorv}"/>
+      </pack>
+    </archive>
 
     <drop bin="${bin}"/>
 

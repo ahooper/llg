@@ -30,12 +30,19 @@ import java.awt.image.BufferedImage;
  * @author jdp
  */
 public final class Luna 
-    extends Object
+    extends org.orekit.bodies.SolarSystemBody.Moon
     implements Drawable,
                World.Distance
 {
-    public final static Luna Instance = new Luna();
-
+    public final static Luna Instance;
+    static {
+        try {
+            Instance = new Luna();
+        }
+        catch (org.orekit.errors.OrekitException exc){
+            throw new Error("Moon",exc);
+        }
+    }
     static void SInit(){
     }
     private final static Color ColorB = new Color(0x20,0x20,0x20);
@@ -44,7 +51,7 @@ public final class Luna
 
     public final static double Circumference = (2 * Math.PI * Radius);
 
-    public final static double SGP = 4902.7779; //(km^3/s/s)
+
 
 
     private volatile Surface list;
@@ -52,7 +59,9 @@ public final class Luna
     volatile Font fontP;
 
 
-    private Luna(){
+    private Luna()
+        throws org.orekit.errors.OrekitException
+    {
         super();
     }
 
