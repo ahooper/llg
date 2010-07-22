@@ -134,7 +134,7 @@ public final class Java {
      */
     public final static String Full = Vendor+' '+Version+' '+Arch;
 
-    public final static boolean IsVendorSun = (Vendor.startsWith("Sun Microsystems"));
+    public final static boolean IsVendorSun = (Vendor.startsWith("Sun Microsystems")||Vendor.startsWith("Oracle"));
     public final static boolean IsVendorApple = (Vendor.startsWith("Apple"));
     public final static boolean IsVendorOther = (!(IsVendorSun||IsVendorApple));
 
